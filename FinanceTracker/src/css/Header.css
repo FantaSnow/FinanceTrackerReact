@@ -1,0 +1,87 @@
+@import url('https://fonts.googleapis.com/css?family=Montserrat:400,700');
+
+body {
+    background: #222;
+    margin: 0;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 16px;
+    color: #FFF;
+}
+
+.container {
+    max-width: 60em;
+    min-width: 45em;
+    margin: 0 auto;
+    padding: 0 2em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+nav {
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 3;
+}
+
+.nav-items,
+.auth-links {
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+    display: flex;
+}
+
+.nav-items li,
+.auth-links li {
+    padding: 2em;
+    text-align: center;
+    transition: all .2s;
+}
+
+.nav-items li:last-child,
+.auth-links li:last-child {
+    padding-right: 0;
+}
+
+nav a {
+    color: #FFF;
+    text-decoration: none;
+    transition: all .3s;
+}
+
+nav a:hover {
+    color: #DDD;
+}
+
+#logo {
+    font-size: 2em;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+header {
+    position: relative;
+    background: linear-gradient(95deg, rgb(0, 119, 255) 0%, rgb(1, 103, 219) 50%, rgb(0, 71, 151) 90%);
+    padding: 10em 0 8em;
+    z-index: 2;
+    width: 100%;
+
+}
+
+header h1 {
+    font-size: 4em;
+    text-transform: uppercase;
+    text-align: center;
+}
+
+#nav-bg {
+    background: linear-gradient(95deg, rgb(0, 119, 255) 0%, rgb(1, 103, 219) 50%, rgb(0, 71, 151) 90%);
+    /* Зробіть фон напівпрозорим для кращого вигляду */
+    position: fixed;
+    height: 5em;
+    width: 100%;
+    top: 0;
+    z-index: 1;
+}
