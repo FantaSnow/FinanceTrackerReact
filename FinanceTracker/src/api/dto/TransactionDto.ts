@@ -1,5 +1,4 @@
 import { UserDto } from "./UserDto";
-import { CategoryDto } from "./CategoryDto";
 
 export interface TransactionDto {
   id?: string;
@@ -12,11 +11,10 @@ export interface TransactionDto {
 
 export interface TransactionCreateDto {
   sum: number;
-  category?: CategoryDto;
+  categoryId?: number;
 }
 
 export interface TransactionUpdateDto {
   sum: number;
   categoryId: string;
-  category?: CategoryDto;
 }

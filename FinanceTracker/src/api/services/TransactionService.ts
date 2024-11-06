@@ -4,6 +4,7 @@ import {
   TransactionCreateDto,
   TransactionUpdateDto,
 } from "../dto/TransactionDto";
+import AuthService from "./AuthService";
 
 class TransactionService {
   async getAll(): Promise<TransactionDto[]> {
@@ -13,9 +14,15 @@ class TransactionService {
     return response.data;
   }
 
-  async getAllByUser(userId: string): Promise<TransactionDto[]> {
+  async getAllByUser(
+    page: number = 1,
+    pageSize: number = 9
+  ): Promise<TransactionDto[]> {
+    const userId = AuthService.getUserIdFromToken();
+    if (!userId) throw new Error("User is not authenticated");
+
     const response = await apiClient.get<TransactionDto[]>(
-      `/transactions/getAllByUser/${userId}`
+      `/transactions/getAllByUser/${userId}?page=${page}&pageSize=${pageSize}`
     );
     return response.data;
   }
@@ -27,10 +34,10 @@ class TransactionService {
     return response.data;
   }
 
-  async create(
-    userId: string,
-    data: TransactionCreateDto
-  ): Promise<TransactionDto> {
+  async create(data: TransactionCreateDto): Promise<TransactionDto> {
+    const userId = AuthService.getUserIdFromToken();
+    if (!userId) throw new Error("User is not authenticated");
+
     const response = await apiClient.post<TransactionDto>(
       `/transactions/create/${userId}`,
       data

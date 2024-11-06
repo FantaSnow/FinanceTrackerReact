@@ -8,7 +8,6 @@ const Header: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Функція для отримання заголовка в залежності від маршруту
   const getHeaderTitle = () => {
     switch (location.pathname) {
       case "/transaction":
@@ -32,7 +31,7 @@ const Header: React.FC = () => {
         const height = header.clientHeight;
         const offset = height / 2;
         const range = 200;
-        const calc = 1 - (scrollTop - offset + range) / range;
+        const calc = 2 - (scrollTop - offset + range) / range;
         header.style.opacity = `${Math.min(Math.max(calc, 0), 1)}`;
       }
     };
@@ -45,8 +44,8 @@ const Header: React.FC = () => {
   }, []);
 
   const handleLogout = () => {
-    logout(); // Виклик функції logout з контексту
-    navigate("/login"); // редирект на сторінку логіну після виходу
+    logout();
+    navigate("/login");
   };
 
   return (

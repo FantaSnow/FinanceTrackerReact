@@ -6,6 +6,7 @@ import Register from "../components/Register";
 import BankList from "../components/BankList";
 import ProtectedRoute from "./ProtectedRoute";
 import { AuthProvider } from "../components/AuthContext";
+import TransactionComponent from "../components/TransactionComponent";
 
 const BasicRouter: React.FC = () => {
   return (
@@ -16,6 +17,9 @@ const BasicRouter: React.FC = () => {
         <Route path="/register" element={<Register />} />
         <Route element={<ProtectedRoute />}>
           <Route path="/bank" element={<BankList />} />
+        </Route>
+        <Route element={<ProtectedRoute />}>
+          <Route path="/transaction" element={<TransactionComponent />} />
         </Route>
         <Route path="/" element={<Login />} />
       </Routes>
