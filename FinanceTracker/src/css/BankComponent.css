@@ -1,14 +1,8 @@
-/* BankComponent.css */
-
 :root {
     --card-height: 500px;
-    /* Висота картки */
     --card-width: calc(var(--card-height) / 1.5);
-    /* Ширина картки */
     --input-color: rgb(88, 199, 250);
-    /* Колір тексту */
     --background-color: #191c29;
-    /* Колір фону картки та інпутів */
 }
 
 body {
@@ -33,9 +27,7 @@ body {
 .card-container {
     display: flex;
     flex-wrap: wrap;
-    /* Дозволяє карткам переходити на новий ряд */
     justify-content: center;
-    /* Центрує картки в контейнері */
 }
 
 .card {
@@ -43,19 +35,15 @@ body {
     width: var(--card-width);
     height: var(--card-height);
     margin: 10px;
-    /* Відступ між картками */
     border-radius: 6px;
     display: flex;
     flex-direction: column;
-    /* Розташовує елементи вертикально */
-    /* Дозволяє елементам займати доступний простір */
     align-items: center;
     text-align: center;
     font-size: 1.7em;
     color: var(--input-color);
     position: relative;
     padding: 1rem;
-    /* Внутрішні відступи */
     transition: background 0.3s;
 }
 
@@ -69,7 +57,6 @@ body {
 
 .card:hover {
     background: #0d111f;
-    /* Зміна фону при наведенні */
     transition: background 0.3s;
 }
 
@@ -81,38 +68,29 @@ body {
     font-weight: bold;
     margin-top: 4rem;
     margin-bottom: 7rem;
-    /* Відступ між назвою і балансом */
 }
 
-/* Центруємо баланс і ціль */
 .card-center {
     display: flex;
     flex-direction: column;
-    /* Розташовує елементи вертикально */
     justify-content: center;
-    /* Центрує елементи по вертикалі */
     align-items: center;
-    /* Центрує елементи по горизонталі */
     height: 100%;
-    /* Заповнює доступну висоту картки */
 }
 
 .card-balance,
 .card-goal {
     margin: 0.25rem 0;
-    /* Відступи між рядками */
 }
 
 .card-goal {
     margin-bottom: 9rem;
 }
 
-/* Стилі для нової картки */
 .new-bank-card {
     background: var(--background-color);
     width: var(--card-width);
     height: var(--card-height);
-    /* Встановлюємо таку ж висоту, як у картки */
     margin: 10px;
     border-radius: 6px;
     padding: 1rem;
@@ -127,35 +105,24 @@ input {
     margin: 5px;
     padding: 8px;
     color: var(--input-color);
-    /* Колір тексту в полях */
     background: #212534;
-    /* Фон інпутів */
     border: 1px solid var(--input-color);
-    /* Бордер інпутів */
     border-radius: 4px;
-    /* Закруглення кутів */
 }
 
 button {
     margin: 5px;
     padding: 8px 12px;
     color: var(--input-color);
-    /* Колір тексту кнопки */
     background: transparent;
-    /* Прозорий фон кнопки */
     border: 1px solid var(--input-color);
-    /* Бордер кнопки */
     border-radius: 4px;
-    /* Закруглення кутів */
     cursor: pointer;
-    /* Курсор при наведенні */
 }
 
 button:hover {
     background: var(--input-color);
-    /* Фон кнопки при наведенні */
     color: #fff;
-    /* Колір тексту кнопки при наведенні */
 }
 
 ul {

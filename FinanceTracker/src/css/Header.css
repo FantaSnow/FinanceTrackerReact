@@ -78,7 +78,6 @@ header h1 {
 
 #nav-bg {
     background: linear-gradient(95deg, rgb(0, 119, 255) 0%, rgb(1, 103, 219) 50%, rgb(0, 71, 151) 90%);
-    /* Зробіть фон напівпрозорим для кращого вигляду */
     position: fixed;
     height: 5em;
     width: 100%;

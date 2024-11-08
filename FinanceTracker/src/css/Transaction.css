@@ -5,36 +5,131 @@
     margin-top: 220px;
 }
 
+.root {
+    width: 100%;
+    height: 100%;
+}
+
 .Balance {
-    width: 100px;
-    height: 100px;
-    margin-left: 100px;
-    background-color: aqua;
+    background-color: #191c29;
+    box-shadow: 0 4px 8px rgba(0, 89, 255, 0.2), 0 -2px 6px rgba(0, 89, 255, 0.2),
+        4px 0 6px rgba(155, 190, 255, 0.1), -2px 0 6px rgba(0, 16, 53, 0.1);
+    border-radius: 12px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    table-layout: auto;
+    width: 100%;
+    margin-right: 100px;
+    aspect-ratio: 1 / 0.6;
+}
+
+.BalanceText {
+    font-size: 6em;
+}
+
+.TranasctionNameDiv {
+    width: 90%;
+
+}
+
+.inputSumCreate {
+    width: 25%;
+    height: 50%;
+}
+
+.SelectCategoryCreate {
+    width: 25%;
+    height: 50%;
+
+}
+
+.ButtonTransactionCreate {
+    width: 25%;
+    height: 50%;
+
+}
+
+.SelectCategoryCreate {
+    background: #212534;
+    color: rgb(88, 199, 250);
+}
+
+.SelectCategoryEdit {
+    background: #212534;
+    color: rgb(88, 199, 250);
+    width: 200px;
+    padding: 8px;
+    border: 1px solid rgb(88, 199, 250);
+    border-radius: 4px;
+}
+
+.UperCreateBalance {
+    border-radius: 12px;
+    padding: 12px;
+    table-layout: auto;
+    width: 90%;
+    height: 80px;
+    display: flex;
+    flex-direction: row;
+}
+
+.BottomCreateBalance {
+    background-color: #191c29;
+    box-shadow: 0 4px 8px rgba(0, 89, 255, 0.2), 0 -2px 6px rgba(0, 89, 255, 0.2),
+        4px 0 6px rgba(155, 190, 255, 0.1), -2px 0 6px rgba(0, 16, 53, 0.1);
+    border-radius: 12px;
+    padding: 12px;
+    display: flex;
+    table-layout: auto;
+    width: 90%;
+    height: 80px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+
 }
 
 .AddBalance {
-    width: 100px;
-    height: 100px;
-    margin-left: 100px;
-    background-color: red;
+    padding: 12px;
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .Table {
-    width: 1000px;
+    width: 100%;
     height: 700px;
-    margin-left: 300px;
+    margin-left: 100px;
+    margin-right: 100px;
+
 }
 
 .RightContainer {
     display: flex;
     flex-direction: column;
+    width: 50%;
+    height: 50%;
+    margin-right: 100px;
 }
+
+.TransactionName {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    text-align: center;
+
+}
+
 
 .MainContainerTransaction {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-top: 200px;
     height: 1200px;
 }
 
@@ -68,16 +163,12 @@
     text-align: center;
     display: flex;
     align-items: center;
-    /* Це центрує контент по вертикалі */
     justify-content: center;
-    /* Це центрує контент по горизонталі, якщо потрібно */
 }
 
 .files-table-row:hover {
     background-color: #0d111f;
-    /* Змінює фон рядка при наведенні */
     cursor: pointer;
-    /* Додає курсор у вигляді руки */
 }
 
 .column-header {
@@ -106,22 +197,31 @@
     width: 25%;
 }
 
+.column-sumCreate {
+    width: 33%;
+}
+
+.column-categoryCreate {
+    width: 33%;
+}
+
+.column-actionCreate {
+    width: 33%;
+}
+
 .action-cell {
     display: flex;
     justify-content: center;
     gap: 8px;
 }
 
-/* Пагінація */
 .pagination {
     display: flex;
     justify-content: flex-end;
     margin-top: auto;
-    /* Виставляє пагінацію внизу */
     gap: 10px;
 }
 
-/* Стиль для кнопок пагінації */
 .page-btn {
     background-color: #007bff;
     border: none;
@@ -143,4 +243,11 @@
 
 .page-btn:focus {
     outline: none;
+}
+
+.errorCreateTransaction {
+    margin-top: 20px;
+    width: 90%;
+    display: flex;
+    justify-content: center;
 }

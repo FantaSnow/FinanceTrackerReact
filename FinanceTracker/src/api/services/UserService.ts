@@ -1,4 +1,5 @@
 import apiClient from "../config/axiosConfig";
+import AuthService from "./AuthService";
 import {
   UserDto,
   UserCreateDto,
@@ -12,12 +13,18 @@ class UserService {
     return response.data;
   }
 
-  async getById(userId: string): Promise<UserDto> {
+  async getById(): Promise<UserDto> {
+    const userId = AuthService.getUserIdFromToken();
+    if (!userId) throw new Error("User is not authenticated");
+
     const response = await apiClient.get<UserDto>(`/users/getById/${userId}`);
     return response.data;
   }
 
-  async getBalanceById(userId: string): Promise<UserBalanceDto> {
+  async getBalanceById(): Promise<UserBalanceDto> {
+    const userId = AuthService.getUserIdFromToken();
+    if (!userId) throw new Error("User is not authenticated");
+
     const response = await apiClient.get<UserBalanceDto>(
       `/users/getBalanceById/${userId}`
     );
@@ -29,7 +36,10 @@ class UserService {
     return response.data;
   }
 
-  async update(userId: string, data: UserUpdateDto): Promise<UserDto> {
+  async update(data: UserUpdateDto): Promise<UserDto> {
+    const userId = AuthService.getUserIdFromToken();
+    if (!userId) throw new Error("User is not authenticated");
+
     const response = await apiClient.put<UserDto>(
       `/users/update/${userId}`,
       data
@@ -37,7 +47,10 @@ class UserService {
     return response.data;
   }
 
-  async delete(userId: string): Promise<void> {
+  async delete(): Promise<void> {
+    const userId = AuthService.getUserIdFromToken();
+    if (!userId) throw new Error("User is not authenticated");
+
     await apiClient.delete(`/users/delete/${userId}`);
   }
 }

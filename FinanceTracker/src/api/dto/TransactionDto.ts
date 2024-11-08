@@ -1,7 +1,7 @@
 import { UserDto } from "./UserDto";
 
 export interface TransactionDto {
-  id?: string;
+  id: string;
   sum: number;
   createdAt: Date;
   userId: string;
@@ -11,7 +11,7 @@ export interface TransactionDto {
 
 export interface TransactionCreateDto {
   sum: number;
-  categoryId?: number;
+  categoryId?: string;
 }
 
 export interface TransactionUpdateDto {

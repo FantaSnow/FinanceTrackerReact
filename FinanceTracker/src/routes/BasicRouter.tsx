@@ -21,6 +21,7 @@ const BasicRouter: React.FC = () => {
         <Route element={<ProtectedRoute />}>
           <Route path="/transaction" element={<TransactionComponent />} />
         </Route>
+
         <Route path="/" element={<Login />} />
       </Routes>
     </AuthProvider>

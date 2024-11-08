@@ -32,7 +32,7 @@ const BankComponent: React.FC = () => {
       setBanks([...banks, createdBank]);
       setNewBank({ name: "", balanceGoal: 0 });
     } catch (error) {
-      setError("Не вдалося створити банк.");
+      setError("Не вдалося створити банку.");
     }
   };
 
@@ -74,34 +74,33 @@ const BankComponent: React.FC = () => {
     <div className="bank-container">
       <h1>Список банків</h1>
       {error && <p style={{ color: "red" }}>{error}</p>}
-
-      <div className="card-container">
-        <div className="new-bank-card">
-          <div className="new-bank-card-name">
-            <h2>Створити нову банку</h2>
-          </div>
-          <input
-            type="text"
-            placeholder="Назва банку"
-            value={newBank.name}
-            onChange={(e) => setNewBank({ ...newBank, name: e.target.value })}
-          />
-          <div className="new-bank-card-balance">Баланс: 0</div>
-          <div className="new-bank-card-balancegoal">
-            <input
-              type="number"
-              placeholder="Цільовий баланс"
-              value={newBank.balanceGoal}
-              onChange={(e) =>
-                setNewBank({
-                  ...newBank,
-                  balanceGoal: parseFloat(e.target.value),
-                })
-              }
-            />
-          </div>
-          <button onClick={handleCreateBank}>Додати банк</button>
+      <div className="new-bank-card">
+        <div className="new-bank-card-name">
+          <h2>Створити нову банку</h2>
         </div>
+        <input
+          type="text"
+          placeholder="Назва банку"
+          value={newBank.name}
+          onChange={(e) => setNewBank({ ...newBank, name: e.target.value })}
+        />
+        <div className="new-bank-card-balance">Баланс: 0</div>
+        <div className="new-bank-card-balancegoal">
+          <input
+            type="number"
+            placeholder="Цільовий баланс"
+            value={newBank.balanceGoal}
+            onChange={(e) =>
+              setNewBank({
+                ...newBank,
+                balanceGoal: parseFloat(e.target.value),
+              })
+            }
+          />
+        </div>
+        <button onClick={handleCreateBank}>Додати банк</button>
+      </div>
+      <div className="card-container">
         {banks.map((bank) => (
           <div className="card" key={bank.bankId}>
             <div className="card-name">

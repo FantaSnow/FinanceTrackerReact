@@ -9,12 +9,12 @@ const Login: React.FC = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
-  const { login: authLogin } = useAuth(); // Отримуємо функцію login з контексту
+  const { login: authLogin } = useAuth();
 
   const handleLogin = async () => {
     const success = await AuthService.login(login, password);
     if (success) {
-      authLogin(); // Викликаємо функцію login
+      authLogin();
       navigate("/bank");
     } else {
       setError("Не вдалося увійти. Перевірте логін або пароль.");

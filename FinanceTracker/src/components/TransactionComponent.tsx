@@ -3,35 +3,73 @@ import TransactionService from "../api/services/TransactionService";
 import { TransactionDto } from "../api/dto/TransactionDto";
 import CategoryService from "../api/services/CategoryService";
 import { CategoryDto } from "../api/dto/CategoryDto";
+import { BankDto } from "../api/dto/BankDto";
 
 import "../css/Transaction.css";
+import UserService from "../api/services/UserService";
+import BankService from "../api/services/BankService";
 
 const TransactionComponent: React.FC = () => {
   const [transactions, setTransactions] = useState<TransactionDto[]>([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(4);
-  const [itemsPerPage] = useState(8);
+  const [banks, setBanks] = useState<BankDto[]>([]);
+
   const [editingTransactionId, setEditingTransactionId] = useState<
     string | null
   >(null);
+  const [newTransactionSum, setNewTransactionSum] = useState<string>("");
+  const [newTransactionSumBank, setNewTransactionSumBank] =
+    useState<string>("");
+
+  const [newTransactionCategoryId, setNewTransactionCategoryId] = useState<
+    string | null
+  >(null);
+  const [newTransactionBankId, setNewTransactionBankId] = useState<
+    string | null
+  >(null);
+
   const [updatedTransaction, setUpdatedTransaction] =
     useState<TransactionDto | null>(null);
+
   const [categories, setCategories] = useState<CategoryDto[]>([]);
 
+  const [error, setError] = useState<string | null>(null);
+  const [bankerror, setBankError] = useState<string | null>(null);
+
+  const [balance, setBalance] = useState<number>(0);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [itemsPerPage] = useState(8);
+
+  const fetchBalance = async () => {
+    try {
+      const balanceData = await UserService.getBalanceById();
+      setBalance(balanceData.balance);
+    } catch (error) {
+      console.error("Failed to fetch balance", error);
+    }
+  };
+
+  const fetchTransactions = async () => {
+    try {
+      const data = await TransactionService.getAllByUser(
+        currentPage,
+        itemsPerPage
+      );
+      const sortedData = data.sort(
+        (a, b) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      );
+      setTransactions(sortedData);
+      setTotalPages(Math.ceil(data.length / itemsPerPage));
+    } catch (error) {
+      console.error("Failed to fetch transactions", error);
+    }
+  };
+
   useEffect(() => {
-    const fetchTransactions = async () => {
-      try {
-        const data = await TransactionService.getAllByUser(
-          currentPage,
-          itemsPerPage
-        );
-        setTransactions(data);
-        setTotalPages(Math.ceil(data.length / itemsPerPage)); // Встановлюємо totalPages на основі нової кількості елементів
-      } catch (error) {
-        console.error("Failed to fetch transactions", error);
-      }
-    };
     fetchTransactions();
+    fetchBalance();
   }, [currentPage]);
 
   useEffect(() => {
@@ -55,21 +93,94 @@ const TransactionComponent: React.FC = () => {
     setUpdatedTransaction({ ...transaction });
   };
 
+  const handleCreateTransaction = async () => {
+    if (!newTransactionCategoryId) {
+      setError("Будь ласка, оберіть категорію");
+      return;
+    }
+
+    const parsedSum = parseFloat(newTransactionSum);
+    if (isNaN(parsedSum)) {
+      setError("Будь ласка, введіть числове значення для суми");
+      return;
+    }
+
+    try {
+      await TransactionService.create({
+        sum: parsedSum,
+        categoryId: newTransactionCategoryId,
+      });
+      fetchTransactions();
+      setNewTransactionSum("");
+      setNewTransactionCategoryId(null);
+      setError(null);
+      fetchBalance();
+    } catch (error) {
+      console.error("Failed to create transaction", error);
+    }
+  };
+
+  const handleCreateTransactionBank = async () => {
+    if (!newTransactionBankId) {
+      setBankError("Будь ласка, оберіть банку");
+      return;
+    }
+
+    const parsedSum = parseFloat(newTransactionSumBank);
+    if (isNaN(parsedSum)) {
+      setBankError("Будь ласка, введіть числове значення для суми");
+      return;
+    }
+
+    try {
+      await BankService.addToBalance(newTransactionBankId, parsedSum);
+      setNewTransactionSumBank("");
+      setNewTransactionBankId(null);
+      setBankError(null);
+    } catch (error) {
+      console.error("Failed to create bank transaction", error);
+    }
+  };
+  const fetchBanks = async () => {
+    try {
+      const data = await BankService.getAllBanksByUser();
+      setBanks(data);
+    } catch (error) {
+      console.error("Failed to fetch banks", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchTransactions();
+    fetchBalance();
+    fetchBanks();
+  }, [currentPage]);
   const handleSave = async () => {
     if (updatedTransaction && updatedTransaction.id) {
       try {
+        const selectedCategory = categories.find(
+          (category) => category.name === updatedTransaction.categoryName
+        );
+
+        if (!selectedCategory) {
+          throw new Error("Категорія не знайдена");
+        }
+
         await TransactionService.update(updatedTransaction.id, {
           sum: updatedTransaction.sum,
-          categoryId: updatedTransaction.categoryName,
+          categoryId: selectedCategory.id!,
         });
+
+        setTransactions((prevTransactions) =>
+          prevTransactions.map((transaction) =>
+            transaction.id === updatedTransaction.id
+              ? updatedTransaction
+              : transaction
+          )
+        );
         setEditingTransactionId(null);
         setUpdatedTransaction(null);
-        // After saving, refresh the transactions
-        const data = await TransactionService.getAllByUser(
-          currentPage,
-          itemsPerPage
-        );
-        setTransactions(data);
+        fetchBalance();
       } catch (error) {
         console.error("Failed to save transaction", error);
       }
@@ -79,12 +190,12 @@ const TransactionComponent: React.FC = () => {
   const handleDelete = async (transactionId: string) => {
     try {
       await TransactionService.delete(transactionId);
-      // After deletion, refresh the transactions
-      const data = await TransactionService.getAllByUser(
-        currentPage,
-        itemsPerPage
+      setTransactions((prevTransactions) =>
+        prevTransactions.filter(
+          (transaction) => transaction.id !== transactionId
+        )
       );
-      setTransactions(data);
+      fetchBalance();
     } catch (error) {
       console.error("Failed to delete transaction", error);
     }
@@ -188,9 +299,101 @@ const TransactionComponent: React.FC = () => {
 
   return (
     <div className="MainContainerTransaction">
-      <h1>Ваші транзакції</h1>
+      <div className="AddBalance">
+        <div className="TranasctionNameDiv">
+          <h1 className="TransactionName">Створити транзакцію</h1>
+        </div>
+        <div className="UperCreateBalance">
+          <div className="column-header table-cell column-sumCreate">Sum</div>
+          <div className="column-header table-cell column-categoryCreate">
+            Category
+          </div>
+          <div className="column-header table-cell column-actionCreate">
+            Action
+          </div>
+        </div>
+        <div className="BottomCreateBalance">
+          <input
+            className="inputSumCreate"
+            type="text"
+            value={newTransactionSum}
+            onChange={(e) => setNewTransactionSum(e.target.value)}
+          />
+          <select
+            className="SelectCategoryCreate"
+            value={newTransactionCategoryId || ""}
+            onChange={(e) => setNewTransactionCategoryId(e.target.value)}
+          >
+            <option value="" disabled>
+              Оберіть категорію
+            </option>
+            {categories.map((category) => (
+              <option key={category.id} value={category.id}>
+                {category.name}
+              </option>
+            ))}
+          </select>{" "}
+          <button
+            className="ButtonTransactionCreate"
+            onClick={handleCreateTransaction}
+          >
+            Create
+          </button>
+        </div>
+        <div className="errorCreateTransaction">
+          {error && <div className="error">{error}</div>}
+        </div>
+      </div>
+      <div className="AddBalance">
+        <div className="TranasctionNameDiv">
+          <h1 className="TransactionName">Взаємодія з банкою</h1>
+        </div>
+        <div className="UperCreateBalance">
+          <div className="column-header table-cell column-sumCreate">Sum</div>
+          <div className="column-header table-cell column-categoryCreate">
+            Bank
+          </div>
+          <div className="column-header table-cell column-actionCreate">
+            Action
+          </div>
+        </div>
+        <div className="BottomCreateBalance">
+          <input
+            className="inputSumCreate"
+            type="text"
+            value={newTransactionSumBank}
+            onChange={(e) => setNewTransactionSumBank(e.target.value)}
+          />
+          <select
+            className="SelectCategoryCreate"
+            value={newTransactionBankId || ""}
+            onChange={(e) => setNewTransactionBankId(e.target.value)}
+          >
+            <option value="" disabled>
+              Оберіть банку
+            </option>
+            {banks.map((bank) => (
+              <option key={bank.bankId} value={bank.bankId}>
+                {bank.name}
+              </option>
+            ))}
+          </select>
+          <button
+            className="ButtonTransactionCreate"
+            onClick={handleCreateTransactionBank}
+          >
+            Create
+          </button>
+        </div>
+        <div className="errorCreateTransaction">
+          {bankerror && <div className="error">{bankerror}</div>}
+        </div>
+      </div>
       <div className="containerTransaction">
         <div className="Table">
+          <div>
+            <h1 className="TransactionName">Ваші транзакції</h1>
+          </div>
           <div className="files-table">
             <div className="files-table-header">
               <div className="column-header table-cell column-create-date">
@@ -212,27 +415,48 @@ const TransactionComponent: React.FC = () => {
               .map((transaction) => (
                 <div key={transaction.id} className="files-table-row">
                   <div className="table-cell column-create-date">
-                    {new Date(transaction.createdAt).toLocaleDateString()}
+                    {new Date(transaction.createdAt).toLocaleString("uk-UA", {
+                      year: "numeric",
+                      month: "2-digit",
+                      day: "2-digit",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
                   </div>
                   <div className="table-cell column-sum">
                     {editingTransactionId === transaction.id ? (
-                      <input
-                        type="number"
-                        value={updatedTransaction?.sum || ""}
-                        onChange={(e) =>
-                          setUpdatedTransaction({
-                            ...updatedTransaction!,
-                            sum: Number(e.target.value),
-                          })
-                        }
-                      />
+                      <div style={{ position: "relative" }}>
+                        <input
+                          type="number"
+                          value={updatedTransaction?.sum || ""}
+                          onChange={(e) =>
+                            setUpdatedTransaction({
+                              ...updatedTransaction!,
+                              sum: Number(e.target.value),
+                            })
+                          }
+                          style={{ paddingRight: "20px" }}
+                        />
+                        <span
+                          style={{
+                            position: "absolute",
+                            right: "10px",
+                            top: "50%",
+                            transform: "translateY(-50%)",
+                          }}
+                        >
+                          $
+                        </span>
+                      </div>
                     ) : (
-                      transaction.sum
+                      `${transaction.sum} $`
                     )}
                   </div>
+
                   <div className="table-cell column-category">
                     {editingTransactionId === transaction.id ? (
                       <select
+                        className="SelectCategoryEdit"
                         value={updatedTransaction?.categoryName || ""}
                         onChange={(e) =>
                           setUpdatedTransaction({
@@ -253,19 +477,22 @@ const TransactionComponent: React.FC = () => {
                   </div>
                   <div className="table-cell column-action action-cell">
                     {editingTransactionId === transaction.id ? (
-                      <button className="more-action" onClick={handleSave}>
+                      <button
+                        className="action-button save-btn"
+                        onClick={handleSave}
+                      >
                         Save
                       </button>
                     ) : (
                       <button
-                        className="more-action"
+                        className="action-button edit-btn"
                         onClick={() => handleEdit(transaction)}
                       >
                         Edit
                       </button>
                     )}
                     <button
-                      className="more-action"
+                      className="action-button delete-btn"
                       onClick={() => handleDelete(transaction.id)}
                     >
                       Delete
@@ -274,6 +501,12 @@ const TransactionComponent: React.FC = () => {
                 </div>
               ))}
             <div className="pagination">{renderPaginationButtons()}</div>
+          </div>
+        </div>
+        <div className="RightContainer">
+          <h1 className="TransactionName">Баланс</h1>
+          <div className="Balance">
+            <h1 className="BalanceText">{balance} $</h1>
           </div>
         </div>
       </div>
