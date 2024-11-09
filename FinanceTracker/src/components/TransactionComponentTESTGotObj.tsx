@@ -12,6 +12,7 @@ import BankService from "../api/services/BankService";
 const TransactionComponent: React.FC = () => {
   const [transactions, setTransactions] = useState<TransactionDto[]>([]);
   const [banks, setBanks] = useState<BankDto[]>([]);
+  const [activeForm, setActiveForm] = useState("createTransaction"); // Стан для визначення активної форми
 
   const [editingTransactionId, setEditingTransactionId] = useState<
     string | null
@@ -300,94 +301,124 @@ const TransactionComponent: React.FC = () => {
   return (
     <div className="MainContainerTransaction">
       <div className="AddBalance">
-        <div className="TranasctionNameDiv">
-          <h1 className="TransactionName">Створити транзакцію</h1>
-        </div>
-        <div className="UperCreateBalance">
-          <div className="column-header table-cell column-sumCreate">Sum</div>
-          <div className="column-header table-cell column-categoryCreate">
-            Category
+        <div className="AddBalance">
+          <div className="TranasctionNameDiv">
+            <h1
+              className={`TransactionName ${
+                activeForm === "createTransaction" ? "active" : ""
+              }`}
+              onClick={() => setActiveForm("createTransaction")}
+            >
+              Створити транзакцію
+            </h1>
+            <h1
+              className={`TransactionName ${
+                activeForm === "interactionWithBank" ? "active" : ""
+              }`}
+              onClick={() => setActiveForm("interactionWithBank")}
+            >
+              Взаємодія з банкою
+            </h1>
           </div>
-          <div className="column-header table-cell column-actionCreate">
-            Action
+
+          {/* Інші частини компоненту */}
+        </div>
+
+        {/* Умовне рендерення форми для створення транзакції */}
+        {activeForm === "createTransaction" && (
+          <div className="AddBalance">
+            <div className="UperCreateBalance">
+              <div className="column-header table-cell column-sumCreate">
+                Sum
+              </div>
+              <div className="column-header table-cell column-categoryCreate">
+                Category
+              </div>
+              <div className="column-header table-cell column-actionCreate">
+                Action
+              </div>
+            </div>
+            <div className="BottomCreateBalance">
+              <input
+                className="inputSumCreate"
+                type="text"
+                value={newTransactionSum}
+                onChange={(e) => setNewTransactionSum(e.target.value)}
+              />
+              <select
+                className="SelectCategoryCreate"
+                value={newTransactionCategoryId || ""}
+                onChange={(e) => setNewTransactionCategoryId(e.target.value)}
+              >
+                <option value="" disabled>
+                  Оберіть категорію
+                </option>
+                {categories.map((category) => (
+                  <option key={category.id} value={category.id}>
+                    {category.name}
+                  </option>
+                ))}
+              </select>
+              <button
+                className="ButtonTransactionCreate"
+                onClick={handleCreateTransaction}
+              >
+                Create
+              </button>
+            </div>
+            <div className="errorCreateTransaction">
+              {error && <div className="error">{error}</div>}
+            </div>
           </div>
-        </div>
-        <div className="BottomCreateBalance">
-          <input
-            className="inputSumCreate"
-            type="text"
-            value={newTransactionSum}
-            onChange={(e) => setNewTransactionSum(e.target.value)}
-          />
-          <select
-            className="SelectCategoryCreate"
-            value={newTransactionCategoryId || ""}
-            onChange={(e) => setNewTransactionCategoryId(e.target.value)}
-          >
-            <option value="" disabled>
-              Оберіть категорію
-            </option>
-            {categories.map((category) => (
-              <option key={category.id} value={category.id}>
-                {category.name}
-              </option>
-            ))}
-          </select>{" "}
-          <button
-            className="ButtonTransactionCreate"
-            onClick={handleCreateTransaction}
-          >
-            Create
-          </button>
-        </div>
-        <div className="errorCreateTransaction">
-          {error && <div className="error">{error}</div>}
-        </div>
-      </div>
-      <div className="AddBalance">
-        <div className="TranasctionNameDiv">
-          <h1 className="TransactionName">Взаємодія з банкою</h1>
-        </div>
-        <div className="UperCreateBalance">
-          <div className="column-header table-cell column-sumCreate">Sum</div>
-          <div className="column-header table-cell column-categoryCreate">
-            Bank
+        )}
+
+        {/* Умовне рендерення форми для взаємодії з банком */}
+        {activeForm === "interactionWithBank" && (
+          <div className="AddBalance">
+            <div className="UperCreateBalance">
+              <div className="column-header table-cell column-sumCreate">
+                Sum
+              </div>
+              <div className="column-header table-cell column-categoryCreate">
+                Bank
+              </div>
+              <div className="column-header table-cell column-actionCreate">
+                Action
+              </div>
+            </div>
+            <div className="BottomCreateBalance">
+              <input
+                className="inputSumCreate"
+                type="text"
+                value={newTransactionSumBank}
+                onChange={(e) => setNewTransactionSumBank(e.target.value)}
+              />
+              <select
+                className="SelectCategoryCreate"
+                value={newTransactionBankId || ""}
+                onChange={(e) => setNewTransactionBankId(e.target.value)}
+              >
+                <option value="" disabled>
+                  Оберіть банку
+                </option>
+                {banks.map((bank) => (
+                  <option key={bank.bankId} value={bank.bankId}>
+                    {bank.name}
+                  </option>
+                ))}
+              </select>
+              <button
+                className="ButtonTransactionCreate"
+                onClick={handleCreateTransactionBank}
+              >
+                Create
+              </button>
+            </div>
+            <div className="errorCreateTransaction">
+              {bankerror && <div className="error">{bankerror}</div>}
+            </div>
           </div>
-          <div className="column-header table-cell column-actionCreate">
-            Action
-          </div>
-        </div>
-        <div className="BottomCreateBalance">
-          <input
-            className="inputSumCreate"
-            type="text"
-            value={newTransactionSumBank}
-            onChange={(e) => setNewTransactionSumBank(e.target.value)}
-          />
-          <select
-            className="SelectCategoryCreate"
-            value={newTransactionBankId || ""}
-            onChange={(e) => setNewTransactionBankId(e.target.value)}
-          >
-            <option value="" disabled>
-              Оберіть банку
-            </option>
-            {banks.map((bank) => (
-              <option key={bank.bankId} value={bank.bankId}>
-                {bank.name}
-              </option>
-            ))}
-          </select>
-          <button
-            className="ButtonTransactionCreate"
-            onClick={handleCreateTransactionBank}
-          >
-            Create
-          </button>
-        </div>
-        <div className="errorCreateTransaction">
-          {bankerror && <div className="error">{bankerror}</div>}
-        </div>
+        )}
       </div>
       <div className="containerTransaction">
         <div className="Table">
