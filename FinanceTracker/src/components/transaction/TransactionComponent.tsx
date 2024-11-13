@@ -10,9 +10,8 @@ import UserService from "../../api/services/UserService";
 import BankService from "../../api/services/BankService";
 import { TransactionDto } from "../../api/dto/TransactionDto";
 import { CategoryDto } from "../../api/dto/CategoryDto";
-import { BankDto } from "../../api/dto/BankDto";
+import { BankDto, BankAddBalanceDto } from "../../api/dto/BankDto";
 import "../../css/Transaction.css";
-
 const TransactionComponent: React.FC = () => {
   // State variables for managing transactions, banks, categories, etc.
   const [transactions, setTransactions] = useState<TransactionDto[]>([]);
@@ -138,7 +137,9 @@ const TransactionComponent: React.FC = () => {
       return;
     }
     try {
-      await BankService.addToBalance(newTransactionBankId, parsedSum);
+      const balanceDto: BankAddBalanceDto = { balance: parsedSum };
+
+      await BankService.addToBalance(newTransactionBankId, balanceDto);
       fetchTransactions();
       fetchBalance();
       setNewTransactionSumBank("");

@@ -1,17 +1,20 @@
-import apiClient from "../config/axiosConfig";
+import { HttpClient } from "../HttpClient";
 import { StatisticDto, StatisticCategoryDto } from "../dto/StatisticDto";
 
 class StatisticService {
+  private httpClient = new HttpClient({
+    baseURL: "http://localhost:5131/statistics",
+  });
+
   async getByTimeAndCategory(
     userId: string,
     startDate: Date,
     endDate: Date,
     categoryId: string
   ): Promise<StatisticDto> {
-    const response = await apiClient.get<StatisticDto>(
-      `/statistics/getByTimeAndCategory/${startDate.toISOString()}/${endDate.toISOString()}/${categoryId}/user=/${userId}`
+    return await this.httpClient.get<StatisticDto>(
+      `/getByTimeAndCategory/${startDate.toISOString()}/${endDate.toISOString()}/${categoryId}/user=/${userId}`
     );
-    return response.data;
   }
 
   async getForAllCategories(
@@ -19,10 +22,9 @@ class StatisticService {
     startDate: Date,
     endDate: Date
   ): Promise<StatisticCategoryDto[]> {
-    const response = await apiClient.get<StatisticCategoryDto[]>(
-      `/statistics/getForAllCategorys/${startDate.toISOString()}/${endDate.toISOString()}/user=/${userId}`
+    return await this.httpClient.get<StatisticCategoryDto[]>(
+      `/getForAllCategorys/${startDate.toISOString()}/${endDate.toISOString()}/user=/${userId}`
     );
-    return response.data;
   }
 }
 

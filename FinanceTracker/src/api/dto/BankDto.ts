@@ -15,3 +15,7 @@ export interface BankCreateDto {
   name: string;
   balanceGoal: number;
 }
+
+export interface BankAddBalanceDto {
+  balance: number;
+}

@@ -1,4 +1,4 @@
-import apiClient from "../config/axiosConfig";
+import { HttpClient } from "../HttpClient";
 import {
   CategoryDto,
   CategoryCreateDto,
@@ -6,39 +6,34 @@ import {
 } from "../dto/CategoryDto";
 
 class CategoryService {
+  private httpClient = new HttpClient({
+    baseURL: "http://localhost:5131/categorys",
+  });
+
   async getAllCategories(): Promise<CategoryDto[]> {
-    const response = await apiClient.get<CategoryDto[]>("/categorys/getAll");
-    return response.data;
+    return await this.httpClient.get<CategoryDto[]>("/getAll");
   }
 
   async getCategoryById(categoryId: string): Promise<CategoryDto> {
-    const response = await apiClient.get<CategoryDto>(
-      `/categorys/getById/${categoryId}`
-    );
-    return response.data;
+    return await this.httpClient.get<CategoryDto>(`/getById/${categoryId}`);
   }
 
   async createCategory(data: CategoryCreateDto): Promise<CategoryDto> {
-    const response = await apiClient.post<CategoryDto>(
-      `/categorys/create/`,
-      data
-    );
-    return response.data;
+    return await this.httpClient.post<CategoryDto>("/create/", data);
   }
 
   async updateCategory(
     categoryId: string,
     data: CategoryUpdateDto
   ): Promise<CategoryDto> {
-    const response = await apiClient.put<CategoryDto>(
-      `/categorys/update/${categoryId}`,
+    return await this.httpClient.put<CategoryDto>(
+      `/update/${categoryId}`,
       data
     );
-    return response.data;
   }
 
   async deleteCategory(categoryId: string): Promise<void> {
-    await apiClient.delete(`/categorys/delete/${categoryId}`);
+    await this.httpClient.delete(`/delete/${categoryId}`);
   }
 }
 

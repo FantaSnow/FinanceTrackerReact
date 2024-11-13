@@ -1,29 +1,37 @@
-import React from "react";
+import React, { useState } from "react";
 import { Routes, Route } from "react-router-dom";
 import Header from "../components/Header";
 import Login from "../components/Login";
 import Register from "../components/Register";
 import BankList from "../components/BankList";
 import ProtectedRoute from "./ProtectedRoute";
-import { AuthProvider } from "../components/AuthContext";
 import TransactionComponent from "../components/transaction/TransactionComponent";
+import { Navigate } from "react-router-dom";
+import AuthService from "../api/services/AuthService";
 
 const BasicRouter: React.FC = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(
+    AuthService.isAuthenticated()
+  );
+
   return (
-    <AuthProvider>
+    <>
       <Header />
       <Routes>
-        <Route path="/login" element={<Login />} />
+        <Route
+          path="/login"
+          element={<Login setIsAuthenticated={setIsAuthenticated} />}
+        />
         <Route path="/register" element={<Register />} />
-        <Route element={<ProtectedRoute />}>
+
+        <Route element={<ProtectedRoute isAuthenticated={isAuthenticated} />}>
           <Route path="/bank" element={<BankList />} />
-        </Route>
-        <Route element={<ProtectedRoute />}>
           <Route path="/transaction" element={<TransactionComponent />} />
         </Route>
-        <Route path="/" element={<Login />} />
+
+        <Route path="*" element={<Navigate to="/login" />} />
       </Routes>
-    </AuthProvider>
+    </>
   );
 };
 

@@ -1,4 +1,4 @@
-import apiClient from "../config/axiosConfig";
+import { HttpClient } from "../HttpClient";
 import AuthService from "./AuthService";
 import {
   UserDto,
@@ -8,50 +8,46 @@ import {
 } from "../dto/UserDto";
 
 class UserService {
+  private httpClient = new HttpClient({
+    baseURL: "http://localhost:5131/users",
+  });
+
   async getAll(): Promise<UserDto[]> {
-    const response = await apiClient.get<UserDto[]>("/users/getAll/");
-    return response.data;
+    return await this.httpClient.get<UserDto[]>("/getAll/");
   }
 
   async getById(): Promise<UserDto> {
     const userId = AuthService.getUserIdFromToken();
     if (!userId) throw new Error("User is not authenticated");
 
-    const response = await apiClient.get<UserDto>(`/users/getById/${userId}`);
-    return response.data;
+    return await this.httpClient.get<UserDto>(`/getById/${userId}`);
   }
 
   async getBalanceById(): Promise<UserBalanceDto> {
     const userId = AuthService.getUserIdFromToken();
     if (!userId) throw new Error("User is not authenticated");
 
-    const response = await apiClient.get<UserBalanceDto>(
-      `/users/getBalanceById/${userId}`
+    return await this.httpClient.get<UserBalanceDto>(
+      `/getBalanceById/${userId}`
     );
-    return response.data;
   }
 
   async create(data: UserCreateDto): Promise<UserDto> {
-    const response = await apiClient.post<UserDto>(`/users/create/`, data);
-    return response.data;
+    return await this.httpClient.post<UserDto>("/create/", data);
   }
 
   async update(data: UserUpdateDto): Promise<UserDto> {
     const userId = AuthService.getUserIdFromToken();
     if (!userId) throw new Error("User is not authenticated");
 
-    const response = await apiClient.put<UserDto>(
-      `/users/update/${userId}`,
-      data
-    );
-    return response.data;
+    return await this.httpClient.put<UserDto>(`/update/${userId}`, data);
   }
 
   async delete(): Promise<void> {
     const userId = AuthService.getUserIdFromToken();
     if (!userId) throw new Error("User is not authenticated");
 
-    await apiClient.delete(`/users/delete/${userId}`);
+    await this.httpClient.delete(`/delete/${userId}`);
   }
 }
 

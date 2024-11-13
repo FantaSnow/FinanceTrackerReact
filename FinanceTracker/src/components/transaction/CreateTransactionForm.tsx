@@ -50,12 +50,20 @@ const CreateTransactionForm: React.FC<Props> = ({
           </option>
         ))}
       </select>
-      <button
-        className="ButtonTransactionCreate"
-        onClick={handleCreateTransaction}
-      >
-        Create
-      </button>
+      <div className="Buttondiv">
+        <button
+          className="ButtonTransactionCreate"
+          onClick={handleCreateTransaction}
+        >
+          Create
+        </button>
+        <button
+          className="ButtonTransactionCreate"
+          onClick={handleCreateTransaction}
+        >
+          Create
+        </button>
+      </div>
     </div>
     {error && <div className="errorCreateTransaction error">{error}</div>}
   </div>

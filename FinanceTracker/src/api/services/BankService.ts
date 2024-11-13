@@ -1,56 +1,55 @@
-import apiClient from "../config/axiosConfig";
-import { BankDto, BankCreateDto, BankUpdateDto } from "../dto/BankDto";
+import { HttpClient } from "../HttpClient";
 import AuthService from "./AuthService";
+import {
+  BankDto,
+  BankCreateDto,
+  BankUpdateDto,
+  BankAddBalanceDto,
+} from "../dto/BankDto";
 
 class BankService {
+  private httpClient = new HttpClient({
+    baseURL: "http://localhost:5131/banks",
+  });
+
   async getAllBanks(): Promise<BankDto[]> {
-    const response = await apiClient.get<BankDto[]>("/banks/getAll");
-    return response.data;
+    return await this.httpClient.get<BankDto[]>("/getAll");
   }
 
   async getAllBanksByUser(): Promise<BankDto[]> {
     const userId = AuthService.getUserIdFromToken();
     if (!userId) throw new Error("User is not authenticated");
 
-    const response = await apiClient.get<BankDto[]>(
-      `/banks/getAllByUser/${userId}`
-    );
-    return response.data;
+    return await this.httpClient.get<BankDto[]>(`/getAllByUser/${userId}`);
   }
 
   async getBankById(bankId: string): Promise<BankDto> {
-    const response = await apiClient.get<BankDto>(`/banks/getById/${bankId}`);
-    return response.data;
+    return await this.httpClient.get<BankDto>(`/getById/${bankId}`);
   }
 
   async createBank(data: BankCreateDto): Promise<BankDto> {
     const userId = AuthService.getUserIdFromToken();
     if (!userId) throw new Error("User is not authenticated");
 
-    const response = await apiClient.post<BankDto>(
-      `/banks/create/${userId}`,
-      data
-    );
-    return response.data;
+    return await this.httpClient.post<BankDto>(`/create/${userId}`, data);
   }
 
   async updateBank(bankId: string, data: BankUpdateDto): Promise<BankDto> {
-    const response = await apiClient.put<BankDto>(
-      `/banks/update/${bankId}`,
-      data
-    );
-    return response.data;
+    return await this.httpClient.put<BankDto>(`/update/${bankId}`, data);
   }
 
-  async addToBalance(bankId: string, balanceToAdd: number): Promise<BankDto> {
-    const response = await apiClient.put<BankDto>(
-      `/banks/addToBalance/${bankId}/${balanceToAdd}`
+  async addToBalance(
+    bankId: string,
+    data: BankAddBalanceDto
+  ): Promise<BankDto> {
+    return await this.httpClient.put<BankDto>(
+      `/addToBalance/${bankId}/${data.balance}`,
+      null
     );
-    return response.data;
   }
 
   async deleteBank(bankId: string): Promise<void> {
-    await apiClient.delete(`/banks/delete/${bankId}`);
+    await this.httpClient.delete(`/delete/${bankId}`);
   }
 }
 
