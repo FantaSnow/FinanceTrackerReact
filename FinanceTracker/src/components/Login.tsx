@@ -19,7 +19,7 @@ const Login: React.FC<LoginProps> = ({ setIsAuthenticated }) => {
       const success = await AuthService.login(login, password);
       if (success) {
         setIsAuthenticated(AuthService.isAuthenticated());
-        navigate("/bank");
+        navigate("/transaction");
       } else {
         setError("Не вдалося увійти. Перевірте логін або пароль.");
       }
