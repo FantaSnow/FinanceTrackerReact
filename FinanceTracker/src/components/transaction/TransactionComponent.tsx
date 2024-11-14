@@ -12,6 +12,7 @@ import { TransactionDto } from "../../api/dto/TransactionDto";
 import { CategoryDto } from "../../api/dto/CategoryDto";
 import { BankDto } from "../../api/dto/BankDto";
 import "../../css/Transaction.css";
+import Footer from "../Footer"; // Імпортуємо футер
 
 const TransactionComponent: React.FC = () => {
   const [transactions, setTransactions] = useState<TransactionDto[]>([]);
@@ -80,35 +81,43 @@ const TransactionComponent: React.FC = () => {
   const handlePageChange = (page: number) => setCurrentPage(page);
 
   return (
-    <div className="MainContainerTransaction">
-      <div className="AddBalance">
-        <TransactionFormToggle
-          activeForm={activeForm}
-          setActiveForm={setActiveForm}
-        />
-        {activeForm === "createTransaction" ? (
-          <CreateTransactionForm
+    <div>
+      <div className="MainContainerTransaction">
+        <div className="AddBalance">
+          <TransactionFormToggle
+            activeForm={activeForm}
+            setActiveForm={setActiveForm}
+          />
+          {activeForm === "createTransaction" ? (
+            <CreateTransactionForm
+              categories={categories}
+              balance={balance}
+              fetchTransactions={fetchTransactions}
+              fetchBalance={fetchBalance}
+            />
+          ) : (
+            <BankTransactionForm
+              banks={banks}
+              balance={balance}
+              fetchBalance={fetchBalance}
+            />
+          )}
+        </div>
+        <div className="containerTransaction">
+          <TransactionTable
+            transactions={transactions}
             categories={categories}
-            fetchTransactions={fetchTransactions}
+            currentPage={currentPage}
+            totalPages={totalPages}
+            itemsPerPage={itemsPerPage}
+            handlePageChange={handlePageChange}
+            setTransactions={setTransactions}
             fetchBalance={fetchBalance}
           />
-        ) : (
-          <BankTransactionForm banks={banks} fetchBalance={fetchBalance} />
-        )}
+          <BalanceDisplay balance={balance} />
+        </div>
       </div>
-      <div className="containerTransaction">
-        <TransactionTable
-          transactions={transactions}
-          categories={categories}
-          currentPage={currentPage}
-          totalPages={totalPages}
-          itemsPerPage={itemsPerPage}
-          handlePageChange={handlePageChange}
-          setTransactions={setTransactions}
-          fetchBalance={fetchBalance}
-        />
-        <BalanceDisplay balance={balance} />
-      </div>
+      <Footer />
     </div>
   );
 };

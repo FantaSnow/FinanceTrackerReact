@@ -24,13 +24,33 @@
     width: 100%;
     margin-right: 100px;
     aspect-ratio: 1 / 0.6;
+    position: relative;
 }
+
+.Balance::after {
+    position: absolute; 
+    content: "";
+    top: 0;
+    left: 0; 
+    right: 0; 
+    bottom: 0; 
+    z-index: -1; 
+    background-image: linear-gradient(var(--rotate), #5ddcff, #3c67e3 43%, #4e00c2); 
+    opacity: 1;
+    filter: blur(calc(var(--card-height) / 6));
+    transform: scale(0.8);
+
+    transition: opacity 0.5s;
+    animation: spin 2.5s linear infinite;
+}
+
 
 .BalanceText {
     font-size: 6em;
 }
 
 .TranasctionNameDiv {
+    margin-top: 40px;
     width: 90%;
     display: flex;
     flex-direction: row;
@@ -42,7 +62,6 @@
     color: rgb(88, 199, 250);
     ;
     font-size: 24px;
-    /* Збільшуємо розмір шрифта для активного заголовка */
     font-weight: bold;/
 }
 

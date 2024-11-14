@@ -5,29 +5,76 @@ import BankService from "../../api/services/BankService";
 
 type Props = {
   banks: BankDto[];
+  balance: number;
   fetchBalance: () => void;
 };
 
-const BankTransactionForm: React.FC<Props> = ({ banks, fetchBalance }) => {
-  const [error, setError] = useState<string | null>(null);
-  const [newTransactionBankId, setNewTransactionBankId] = useState<
-    string | null
-  >(null);
-  const [newTransactionSumBank, setNewTransactionSumBank] =
-    useState<string>("");
 
-  const handleCreateTransactionBank = async () => {
+const BankTransactionForm: React.FC<Props> = ({ banks,balance, fetchBalance }) => {
+  const [error, setError] = useState<string | null>(null);
+  const [newTransactionBankId, setNewTransactionBankId] = useState<string | null>(null);
+  const [newTransactionSumBank, setNewTransactionSumBank] = useState<string>("");
+
+  const handleDeposit = async () => {
     if (!newTransactionBankId) {
       setError("Будь ласка, оберіть банку");
       return;
     }
+
     const parsedSum = parseFloat(newTransactionSumBank);
     if (isNaN(parsedSum)) {
       setError("Будь ласка, введіть числове значення для суми");
       return;
     }
+
+    if (parsedSum <= 0) {
+      setError("Неможна вводити від’ємне число для поповнення");
+      return;
+    }
+
+    const selectedBank = banks.find(bank => bank.bankId === newTransactionBankId);
+    if (selectedBank && parsedSum > balance) {
+      setError("У вас недостатньо балансу");
+      return;
+    }
+
     try {
       const balanceDto: BankAddBalanceDto = { balance: parsedSum };
+      await BankService.addToBalance(newTransactionBankId, balanceDto);
+      setNewTransactionSumBank("");
+      setNewTransactionBankId(null);
+      setError(null);
+      fetchBalance();
+    } catch (error) {
+      console.error("Failed to create bank transaction", error);
+    }
+  };
+
+  const handleWithdraw = async () => {
+    if (!newTransactionBankId) {
+      setError("Будь ласка, оберіть банку");
+      return;
+    }
+
+    const parsedSum = parseFloat(newTransactionSumBank);
+    if (isNaN(parsedSum)) {
+      setError("Будь ласка, введіть числове значення для суми");
+      return;
+    }
+
+    if (parsedSum <= 0) {
+      setError("Неможна вводити від’ємне число для зняття");
+      return;
+    }
+
+    const selectedBank = banks.find(bank => bank.bankId === newTransactionBankId);
+    if (selectedBank && parsedSum > selectedBank.balance) {
+      setError("У вас недостатньо балансу в банку");
+      return;
+    }
+
+    try {
+      const balanceDto: BankAddBalanceDto = { balance: -parsedSum };
       await BankService.addToBalance(newTransactionBankId, balanceDto);
       setNewTransactionSumBank("");
       setNewTransactionBankId(null);
@@ -73,13 +120,13 @@ const BankTransactionForm: React.FC<Props> = ({ banks, fetchBalance }) => {
         <div className="Buttondiv">
           <button
             className="ButtonTransactionCreate"
-            onClick={handleCreateTransactionBank}
+            onClick={handleDeposit}
           >
             Поповнити
           </button>
           <button
             className="ButtonTransactionCreate"
-            onClick={handleCreateTransactionBank}
+            onClick={handleWithdraw}
           >
             Зняти
           </button>
