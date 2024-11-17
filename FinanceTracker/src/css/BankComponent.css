@@ -3,7 +3,7 @@
     --card-width: calc(var(--card-height) / 1.5);
     --input-color: rgb(88, 199, 250);
     --background-color: #191c29;
-    
+
 }
 
 body {
@@ -13,10 +13,10 @@ body {
     flex-direction: column;
     padding-top: 2rem;
     box-sizing: border-box;
-    
+
 }
 
-  
+
 .bank-container {
     display: flex;
     flex-direction: column;
@@ -30,45 +30,46 @@ body {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    width: 60%; 
+    width: 60%;
+    margin-bottom: 100px;
 }
 
-.card:hover:before, .card:hover:after {
+.card:hover:before,
+.card:hover:after {
     animation: none;
     opacity: 1;
-  } 
-  
+}
+
 .card-with-border::before {
     content: "";
     width: 104%;
     height: 102%;
     border-radius: 8px;
-    background-image: linear-gradient(
-      var(--rotate)
-      , #5ddcff, #3c67e3 43%, #4e00c2);
-      position: absolute;
-      z-index: -1;
-      top: -1%;
-      left: -2%;
-      animation: spin 2.5s linear infinite;
-  }
-  
+    background-image: linear-gradient(var(--rotate), #5ddcff, #3c67e3 43%, #4e00c2);
+    position: absolute;
+    z-index: -1;
+    top: -1%;
+    left: -2%;
+    animation: spin 2.5s linear infinite;
+}
+
 .card {
     background: var(--background-color);
-    width: var(--card-width);
-    height: var(--card-height);
+    width: 450px;
+    height: 600px;
     margin: 10px;
     border-radius: 6px;
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
+    justify-content: space-around;
     font-size: 2.5em;
     color: var(--input-color);
     position: relative;
     padding: 1rem;
     transition: background 0.3s;
-    
+
 }
 
 .new-bank-card-balance {
@@ -113,13 +114,15 @@ body {
 
 .new-bank-card {
     background: var(--background-color);
-    width: var(--card-width);
-    height: var(--card-height);
+    width: 450px;
+    height: 600px;
     margin: 10px;
     border-radius: 6px;
     padding: 1rem;
+    margin-top: 100px;
     display: flex;
     flex-direction: column;
+    justify-content: space-around;
     align-items: center;
     text-align: center;
     color: var(--input-color);
@@ -153,9 +156,9 @@ button:hover {
     syntax: "<angle>";
     initial-value: 132deg;
     inherits: false;
-  }
+}
 
-  .card-with-border::after {
+.card-with-border::after {
     position: absolute;
     content: "";
     top: calc(var(--card-height) / 6);
@@ -167,20 +170,18 @@ button:hover {
     margin: 0 auto;
     transform: scale(0.8);
     filter: blur(calc(var(--card-height) / 6));
-    background-image: linear-gradient(
-      var(--rotate)
-      , #5ddcff, #3c67e3 43%, #4e00c2);
-      opacity: 1;
+    background-image: linear-gradient(var(--rotate), #5ddcff, #3c67e3 43%, #4e00c2);
+    opacity: 1;
     transition: opacity .5s;
     animation: spin 2.5s linear infinite;
-  }
-  
-  @keyframes spin {
+}
+
+@keyframes spin {
     0% {
-      --rotate: 0deg;
+        --rotate: 0deg;
     }
+
     100% {
-      --rotate: 360deg;
+        --rotate: 360deg;
     }
-  }
-  
+}

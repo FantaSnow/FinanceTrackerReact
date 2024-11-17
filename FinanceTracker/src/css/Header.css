@@ -9,13 +9,10 @@ body {
 }
 
 .container {
-    max-width: 60em;
-    min-width: 45em;
-    margin: 0 auto;
-    padding: 0 2em;
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    flex-direction: row;
+    justify-content: space-around;
 }
 
 nav {

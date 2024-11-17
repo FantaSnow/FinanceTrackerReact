@@ -12,7 +12,7 @@ import { TransactionDto } from "../../api/dto/TransactionDto";
 import { CategoryDto } from "../../api/dto/CategoryDto";
 import { BankDto } from "../../api/dto/BankDto";
 import "../../css/Transaction.css";
-import Footer from "../Footer"; // Імпортуємо футер
+import Footer from "../Footer";
 
 const TransactionComponent: React.FC = () => {
   const [transactions, setTransactions] = useState<TransactionDto[]>([]);
@@ -24,7 +24,7 @@ const TransactionComponent: React.FC = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const itemsPerPage = 8;
+  const itemsPerPage = 9;
 
   const fetchBalance = async () => {
     try {
@@ -103,17 +103,20 @@ const TransactionComponent: React.FC = () => {
             />
           )}
         </div>
+
         <div className="containerTransaction">
-          <TransactionTable
-            transactions={transactions}
-            categories={categories}
-            currentPage={currentPage}
-            totalPages={totalPages}
-            itemsPerPage={itemsPerPage}
-            handlePageChange={handlePageChange}
-            setTransactions={setTransactions}
-            fetchBalance={fetchBalance}
-          />
+          <div className="TableDiv">
+            <TransactionTable
+              transactions={transactions}
+              categories={categories}
+              currentPage={currentPage}
+              totalPages={totalPages}
+              itemsPerPage={itemsPerPage}
+              handlePageChange={handlePageChange}
+              setTransactions={setTransactions}
+              fetchBalance={fetchBalance}
+            />
+          </div>
           <BalanceDisplay balance={balance} />
         </div>
       </div>

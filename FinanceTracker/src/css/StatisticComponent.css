@@ -1,0 +1,216 @@
+:root {
+    --card-height: 900px;
+    --card-width: calc(var(--card-height) / 1.5);
+    --input-color: rgb(88, 199, 250);
+    --background-color: #191c29;
+
+}
+
+.rowDate {
+    display: flex;
+    flex-direction: column;
+    margin: 0px 50px;
+    text-align: center;
+    font-size: 2em;
+    width: 25%;
+
+}
+
+.date-wrapper {
+    width: 100%;
+}
+
+.date-wrapper input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 5px;
+    font-size: 1em;
+}
+
+
+
+.date-selector {
+    margin-top: 50px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.CardContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 50px;
+}
+
+.CardPlus,
+.CardMinus {
+    background: var(--background-color);
+    height: var(--card-height);
+    margin: 10px;
+    border-radius: 46px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    text-align: center;
+    font-size: 2.5em;
+    color: var(--input-color);
+    position: relative;
+    padding: 1rem;
+    transition: width 0.3s ease-in-out;
+}
+
+
+.CardPlus.active {
+    width: 70%;
+}
+
+.CardMinus.active {
+    width: 70%;
+}
+
+.CardPlus:not(.active) {
+    width: 20%;
+}
+
+.CardMinus:not(.active) {
+    width: 20%;
+}
+
+.StatisticNameDiv {
+    justify-content: space-around;
+    margin-top: 40px;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+}
+
+.StatisticNameDiv {
+    margin-top: 40px;
+    width: 90%;
+    display: flex;
+    flex-direction: row;
+    place-items: center;
+
+}
+
+.StatisticName.active {
+
+    color: rgb(88, 199, 250);
+    font-size: 44px;
+    font-weight: bold;
+
+
+
+}
+
+.StatisticName {
+    font-size: 24px;
+    cursor: pointer;
+    transition: color 0.4s ease, font-size 0.4s ease, font-weight 0.4s ease;
+}
+
+.StatisticCard {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.SumPlus {
+    color: RGB(88, 250, 88);
+    font-size: 3vw;
+
+}
+
+.SumMinus {
+    color: RGB(255, 0, 0);
+    font-size: 3vw;
+
+}
+
+.files-table {
+    box-shadow: 0 0 0 0;
+}
+
+
+
+.SumPlus2,
+.SumMinus2 {
+    font-size: 3vw;
+}
+
+.SumMinus {
+    color: RGB(255, 0, 0);
+    font-size: 3vw;
+
+}
+
+.SumPlusSecond {
+    font-size: 2vw;
+
+}
+
+.SumMinusSecond {
+    font-size: 2vw;
+
+}
+
+.CardPlus .StatisticCard,
+.CardMinus .StatisticCard {
+
+    width: 100%;
+    transition: width 0.4 ease-out;
+    height: 100%;
+    background-color: rgb(88, 199, 250, 0);
+}
+
+.CardMinus {
+    display: flex;
+    flex-direction: row-reverse;
+
+}
+
+.CardPlus.active .StatisticCard {
+    width: 29%;
+}
+
+.CardMinus.active .StatisticCard {
+    width: 29%;
+}
+
+.CardPlus .StatisticTablePlus,
+.CardMinus .StatisticTablePlus {
+    justify-content: center;
+    display: flex;
+    width: 0%;
+    height: 100%;
+    transition: width 0.3s ease-out;
+}
+
+
+.CardPlus.active .StatisticTablePlus {
+    width: 70%;
+}
+
+.CardMinus.active .StatisticTablePlus {
+    width: 70%;
+}
+
+.CardPlus .StatisticTableMinus,
+.CardMinus .StatisticTableMinus {
+    justify-content: center;
+    display: flex;
+    width: 0%;
+    height: 100%;
+    transition: width 0.3s ease-out;
+}
+
+
+.CardPlus.active .StatisticTableMinus {
+    width: 70%;
+}
+
+.CardMinus.active .StatisticTableMinus {
+    width: 70%;
+}
