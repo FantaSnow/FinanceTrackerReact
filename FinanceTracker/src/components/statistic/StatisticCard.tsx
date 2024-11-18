@@ -3,11 +3,13 @@ import "../../css/StatisticComponent.css";
 import TransactionTable from "../transaction/TransactionTable";
 import { TransactionDto } from "../../api/dto/TransactionDto";
 import { CategoryDto } from "../../api/dto/CategoryDto";
+import { StatisticDto } from "../../api/dto/StatisticDto";
 
 type Props = {
   activeForm: string;
   transactions: TransactionDto[];
   categories: CategoryDto[];
+  statisticsForAllCategories: StatisticDto;
   currentPage: number;
   totalPages: number;
   itemsPerPage: number;
@@ -20,6 +22,7 @@ const StatisticCard: React.FC<Props> = ({
   activeForm,
   transactions,
   categories,
+  statisticsForAllCategories,
   currentPage,
   totalPages,
   itemsPerPage,
@@ -33,14 +36,26 @@ const StatisticCard: React.FC<Props> = ({
     >
       <div className="StatisticCard">
         <div>
-          <h1 className="SumPlus2">Сума:</h1>
-          <h1 className="SumPlus">+1202$</h1>
+          <h1 className="SumPlus2">Доходи:</h1>
+          <h1 className="SumPlus">
+            {statisticsForAllCategories !== null
+              ? `${statisticsForAllCategories.plusSum}$`
+              : "N/A"}
+          </h1>
         </div>
         <div>
-          <h1 className="SumPlusSecond">Транзакції: 32</h1>
+          <h1 className="SumPlusSecond">
+            {statisticsForAllCategories !== null
+              ? `Транзакції: ${statisticsForAllCategories.plusCountTransaction}`
+              : "N/A"}
+          </h1>
         </div>
         <div>
-          <h1 className="SumPlusSecond">Категорій: 32</h1>
+          <h1 className="SumPlusSecond">
+            {statisticsForAllCategories !== null
+              ? `Категорій: ${statisticsForAllCategories.plusCountCategory}`
+              : "N/A"}
+          </h1>
         </div>
       </div>
       <div className="StatisticTablePlus">
@@ -65,14 +80,26 @@ const StatisticCard: React.FC<Props> = ({
     >
       <div className="StatisticCard">
         <div>
-          <h1 className="SumMinus2">Сума:</h1>
-          <h1 className="SumMinus">-1202$</h1>
+          <h1 className="SumMinus2">Витрати:</h1>
+          <h1 className="SumMinus">
+            {statisticsForAllCategories !== null
+              ? `${statisticsForAllCategories.minusSum}$`
+              : "N/A"}
+          </h1>
         </div>
         <div>
-          <h1 className="SumMinusSecond">Транзакції: 32</h1>
+          <h1 className="SumMinusSecond">
+            {statisticsForAllCategories !== null
+              ? `Транзакції: ${statisticsForAllCategories.minusCountTransaction}`
+              : "N/A"}
+          </h1>
         </div>
         <div>
-          <h1 className="SumMinusSecond">Категорій: 32</h1>
+          <h1 className="SumMinusSecond">
+            {statisticsForAllCategories !== null
+              ? `Категорій: ${statisticsForAllCategories.minusCountCategory}`
+              : "N/A"}
+          </h1>
         </div>
       </div>
       <div className="StatisticTableMinus">

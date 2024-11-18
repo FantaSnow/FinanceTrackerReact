@@ -1,5 +1,6 @@
 import { HttpClient } from "../HttpClient";
 import { StatisticDto, StatisticCategoryDto } from "../dto/StatisticDto";
+import AuthService from "./AuthService";
 
 class StatisticService {
   private httpClient = new HttpClient({
@@ -7,23 +8,39 @@ class StatisticService {
   });
 
   async getByTimeAndCategory(
-    userId: string,
-    startDate: Date,
-    endDate: Date,
+    startDate: string,
+    endDate: string,
     categoryId: string
   ): Promise<StatisticDto> {
+    const userId = AuthService.getUserIdFromToken();
+    if (!userId) throw new Error("User is not authenticated");
+
     return await this.httpClient.get<StatisticDto>(
-      `/getByTimeAndCategory/${startDate.toISOString()}/${endDate.toISOString()}/${categoryId}/user=/${userId}`
+      `/getByTimeAndCategory/${startDate}/${endDate}/${categoryId}/user=/${userId}`
+    );
+  }
+
+  async getByTimeAndCategoryForAll(
+    startDate: string,
+    endDate: string
+  ): Promise<StatisticDto> {
+    const userId = AuthService.getUserIdFromToken();
+    if (!userId) throw new Error("User is not authenticated");
+
+    return await this.httpClient.get<StatisticDto>(
+      `/getByTimeAndCategory/${startDate}/${endDate}/user=/${userId}`
     );
   }
 
   async getForAllCategories(
-    userId: string,
-    startDate: Date,
-    endDate: Date
+    startDate: string,
+    endDate: string
   ): Promise<StatisticCategoryDto[]> {
+    const userId = AuthService.getUserIdFromToken();
+    if (!userId) throw new Error("User is not authenticated");
+
     return await this.httpClient.get<StatisticCategoryDto[]>(
-      `/getForAllCategorys/${startDate.toISOString()}/${endDate.toISOString()}/user=/${userId}`
+      `/getForAllCategorys/${startDate}/${endDate}/user=/${userId}`
     );
   }
 }

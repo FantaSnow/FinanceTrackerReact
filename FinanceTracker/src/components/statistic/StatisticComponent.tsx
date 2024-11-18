@@ -9,6 +9,8 @@ import Footer from "../Footer";
 import UserService from "../../api/services/UserService";
 import TransactionService from "../../api/services/TransactionService";
 import CategoryService from "../../api/services/CategoryService";
+import StatisticService from "../../api/services/StatisticService";
+import { StatisticDto } from "../../api/dto/StatisticDto";
 
 const StatisticComponent: React.FC = () => {
   const [activeForm, setActiveForm] = useState<string>("CardPlusActive");
@@ -22,6 +24,17 @@ const StatisticComponent: React.FC = () => {
 
   const [startDate, setStartDate] = useState<string>("");
   const [endDate, setEndDate] = useState<string>("");
+
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
+  const [statisticsByTimeAndCategory, setStatisticsByTimeAndCategory] =
+    useState<StatisticDto>({
+      minusSum: 0,
+      minusCountTransaction: 0,
+      minusCountCategory: 0,
+      plusSum: 0,
+      plusCountTransaction: 0,
+      plusCountCategory: 0,
+    });
 
   const fetchBalance = async () => {
     try {
@@ -37,7 +50,7 @@ const StatisticComponent: React.FC = () => {
   const fetchTransactions = async () => {
     try {
       let data: TransactionDto[] = [];
-      if (activeForm === "CardPlusActive") {
+      if (activeForm === "CardPlusActive" && !selectedCategory) {
         data = await TransactionService.getAllPlusByUserAndDate(
           currentPage,
           itemsPerPage,
@@ -45,7 +58,18 @@ const StatisticComponent: React.FC = () => {
           endDate
         );
       }
-      if (activeForm === "CardMinusActive") {
+
+      if (activeForm === "CardPlusActive" && selectedCategory) {
+        data = await TransactionService.getAllPlusByUserAndDateAndCategory(
+          currentPage,
+          itemsPerPage,
+          startDate,
+          endDate,
+          selectedCategory
+        );
+      }
+
+      if (activeForm === "CardMinusActive" && !selectedCategory) {
         data = await TransactionService.getAllMinusByUserAndDate(
           currentPage,
           itemsPerPage,
@@ -53,6 +77,17 @@ const StatisticComponent: React.FC = () => {
           endDate
         );
       }
+
+      if (activeForm === "CardMinusActive" && selectedCategory) {
+        data = await TransactionService.getAllMinusByUserAndDateAndCategory(
+          currentPage,
+          itemsPerPage,
+          startDate,
+          endDate,
+          selectedCategory
+        );
+      }
+
       setTransactions(data);
       setTotalPages(Math.ceil(data.length / itemsPerPage));
     } catch (error) {
@@ -60,12 +95,36 @@ const StatisticComponent: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [activeForm]);
+  const fetchStatisticsByTimeAndCategory = async () => {
+    try {
+      let data;
+      if (!selectedCategory) {
+        data = await StatisticService.getByTimeAndCategoryForAll(
+          startDate,
+          endDate
+        );
+      } else {
+        data = await StatisticService.getByTimeAndCategory(
+          startDate,
+          endDate,
+          selectedCategory
+        );
+      }
+      setStatisticsByTimeAndCategory(data);
+    } catch (error) {
+      console.error("Failed to fetch statistics by category", error);
+    }
+  };
 
   useEffect(() => {
     fetchTransactions();
+    setCurrentPage(1);
+    fetchStatisticsByTimeAndCategory();
+  }, [activeForm, selectedCategory]);
+
+  useEffect(() => {
+    fetchTransactions();
+    fetchStatisticsByTimeAndCategory();
   }, [activeForm, currentPage, startDate, endDate]);
 
   const handleFormToggle = (form: string) => {
@@ -93,9 +152,11 @@ const StatisticComponent: React.FC = () => {
       <StatisticSelectDate
         startDate={startDate}
         endDate={endDate}
+        categories={categories}
         setStartDate={setStartDate}
         setEndDate={setEndDate}
         fetchTransactions={fetchTransactions}
+        onCategorySelect={setSelectedCategory}
       />
       <StatisticFormToggle
         activeForm={activeForm}
@@ -105,6 +166,7 @@ const StatisticComponent: React.FC = () => {
         activeForm={activeForm}
         transactions={transactions}
         categories={categories}
+        statisticsForAllCategories={statisticsByTimeAndCategory}
         currentPage={currentPage}
         totalPages={totalPages}
         itemsPerPage={itemsPerPage}
