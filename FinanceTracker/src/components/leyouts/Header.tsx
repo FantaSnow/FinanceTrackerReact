@@ -1,7 +1,7 @@
 import React from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import AuthService from "../api/services/AuthService";
-import "../css/Header.css";
+import AuthService from "../../api/services/AuthService";
+import "../../css/Header.css";
 
 const Header: React.FC = () => {
   const navigate = useNavigate();

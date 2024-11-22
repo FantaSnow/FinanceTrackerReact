@@ -17,10 +17,11 @@ const CreateTransactionForm: React.FC<Props> = ({
   fetchBalance,
 }) => {
   const [error, setError] = useState<string | null>(null);
-  const [newTransactionCategoryId, setNewTransactionCategoryId] = useState<string | null>(null);
+  const [newTransactionCategoryId, setNewTransactionCategoryId] = useState<
+    string | null
+  >(null);
   const [newTransactionSum, setNewTransactionSum] = useState<string>("");
 
-  // Handler for income transactions
   const handleIncomeTransaction = async () => {
     if (!newTransactionCategoryId) {
       setError("Будь ласка, оберіть категорію");
@@ -53,7 +54,6 @@ const CreateTransactionForm: React.FC<Props> = ({
     }
   };
 
-  // Handler for expense transactions
   const handleExpenseTransaction = async () => {
     if (!newTransactionCategoryId) {
       setError("Будь ласка, оберіть категорію");
@@ -78,7 +78,7 @@ const CreateTransactionForm: React.FC<Props> = ({
 
     try {
       await TransactionService.create({
-        sum: -parsedSum, // Expenses are recorded as negative values
+        sum: -parsedSum,
         categoryId: newTransactionCategoryId,
       });
       setNewTransactionSum("");
@@ -95,8 +95,12 @@ const CreateTransactionForm: React.FC<Props> = ({
     <div className="AddBalance">
       <div className="UperCreateBalance">
         <div className="column-header table-cell column-sumCreate">Sum</div>
-        <div className="column-header table-cell column-categoryCreate">Category</div>
-        <div className="column-header table-cell column-actionCreate">Action</div>
+        <div className="column-header table-cell column-categoryCreate">
+          Category
+        </div>
+        <div className="column-header table-cell column-actionCreate">
+          Action
+        </div>
       </div>
       <div className="BottomCreateBalance">
         <input

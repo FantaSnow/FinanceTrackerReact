@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import BankService from "../api/services/BankService";
-import { BankDto, BankCreateDto } from "../api/dto/BankDto";
-import "../css/BankComponent.css";
-import Footer from "../components/Footer"; // Імпортуємо футер
+import BankService from "../../api/services/BankService";
+import { BankDto, BankCreateDto } from "../../api/dto/BankDto";
+import "../../css/BankComponent.css";
+import Footer from "../leyouts/Footer";
 
 const BankComponent: React.FC = () => {
   const [banks, setBanks] = useState<BankDto[]>([]);

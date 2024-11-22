@@ -12,7 +12,7 @@ import { TransactionDto } from "../../api/dto/TransactionDto";
 import { CategoryDto } from "../../api/dto/CategoryDto";
 import { BankDto } from "../../api/dto/BankDto";
 import "../../css/Transaction.css";
-import Footer from "../Footer";
+import Footer from "../leyouts/Footer";
 
 const TransactionComponent: React.FC = () => {
   const [transactions, setTransactions] = useState<TransactionDto[]>([]);

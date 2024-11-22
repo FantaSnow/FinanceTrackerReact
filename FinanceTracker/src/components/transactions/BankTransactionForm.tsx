@@ -9,11 +9,17 @@ type Props = {
   fetchBalance: () => void;
 };
 
-
-const BankTransactionForm: React.FC<Props> = ({ banks,balance, fetchBalance }) => {
+const BankTransactionForm: React.FC<Props> = ({
+  banks,
+  balance,
+  fetchBalance,
+}) => {
   const [error, setError] = useState<string | null>(null);
-  const [newTransactionBankId, setNewTransactionBankId] = useState<string | null>(null);
-  const [newTransactionSumBank, setNewTransactionSumBank] = useState<string>("");
+  const [newTransactionBankId, setNewTransactionBankId] = useState<
+    string | null
+  >(null);
+  const [newTransactionSumBank, setNewTransactionSumBank] =
+    useState<string>("");
 
   const handleDeposit = async () => {
     if (!newTransactionBankId) {
@@ -32,7 +38,9 @@ const BankTransactionForm: React.FC<Props> = ({ banks,balance, fetchBalance }) =
       return;
     }
 
-    const selectedBank = banks.find(bank => bank.bankId === newTransactionBankId);
+    const selectedBank = banks.find(
+      (bank) => bank.bankId === newTransactionBankId
+    );
     if (selectedBank && parsedSum > balance) {
       setError("У вас недостатньо балансу");
       return;
@@ -67,7 +75,9 @@ const BankTransactionForm: React.FC<Props> = ({ banks,balance, fetchBalance }) =
       return;
     }
 
-    const selectedBank = banks.find(bank => bank.bankId === newTransactionBankId);
+    const selectedBank = banks.find(
+      (bank) => bank.bankId === newTransactionBankId
+    );
     if (selectedBank && parsedSum > selectedBank.balance) {
       setError("У вас недостатньо балансу в банку");
       return;
@@ -118,16 +128,10 @@ const BankTransactionForm: React.FC<Props> = ({ banks,balance, fetchBalance }) =
           ))}
         </select>
         <div className="Buttondiv">
-          <button
-            className="ButtonTransactionCreate"
-            onClick={handleDeposit}
-          >
+          <button className="ButtonTransactionCreate" onClick={handleDeposit}>
             Поповнити
           </button>
-          <button
-            className="ButtonTransactionCreate"
-            onClick={handleWithdraw}
-          >
+          <button className="ButtonTransactionCreate" onClick={handleWithdraw}>
             Зняти
           </button>
         </div>

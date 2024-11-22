@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import "../../css/CategoryStatisticComponent.css";
 import StatisticSelectDate from "./CategoryStatisticSelectDate";
 import CategoryStatisticCard from "./CategoryStatisticCard";
-import Footer from "../Footer";
+import Footer from "../leyouts/Footer";
 import StatisticService from "../../api/services/StatisticService";
 import { StatisticCategoryDto } from "../../api/dto/StatisticDto";
 
