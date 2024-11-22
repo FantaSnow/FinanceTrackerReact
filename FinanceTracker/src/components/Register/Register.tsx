@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import UserService from "../api/services/UserService";
-import "../css/AuthTile.css";
+import UserService from "../../api/services/UserService";
+import "../../css/AuthTile.css";
 
 const Register: React.FC = () => {
   const [login, setLogin] = useState("");

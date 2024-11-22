@@ -5,7 +5,7 @@ import StatisticFormToggle from "./StatisticFormToggle";
 import { TransactionDto } from "../../api/dto/TransactionDto";
 import StatisticCard from "./StatisticCard";
 import { CategoryDto } from "../../api/dto/CategoryDto";
-import Footer from "../Footer";
+import Footer from "../leyouts/Footer";
 import UserService from "../../api/services/UserService";
 import TransactionService from "../../api/services/TransactionService";
 import CategoryService from "../../api/services/CategoryService";

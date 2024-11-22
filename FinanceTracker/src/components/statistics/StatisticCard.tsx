@@ -1,6 +1,6 @@
 import React from "react";
 import "../../css/StatisticComponent.css";
-import TransactionTable from "../transaction/TransactionTable";
+import TransactionTable from "../transactions/TransactionTable";
 import { TransactionDto } from "../../api/dto/TransactionDto";
 import { CategoryDto } from "../../api/dto/CategoryDto";
 import { StatisticDto } from "../../api/dto/StatisticDto";

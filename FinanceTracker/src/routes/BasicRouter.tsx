@@ -1,39 +1,32 @@
-import React, { useState } from "react";
-import { Routes, Route } from "react-router-dom";
-import Header from "../components/Header";
-import Login from "../components/Login";
-import Register from "../components/Register";
-import BankList from "../components/BankList";
+import React from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
+import Header from "../components/leyouts/Header";
+import Login from "../components/Register/Login";
+import Register from "../components/Register/Register";
+import BankList from "../components/banks/BankList";
 import ProtectedRoute from "./ProtectedRoute";
-import TransactionComponent from "../components/transaction/TransactionComponent";
-import StatisticComponent from "../components/statistic/StatisticComponent";
-import CategoryStatisticComponent from "../components/categoryStatistic/CategoryStatisticComponent";
-
-import { Navigate } from "react-router-dom";
-import AuthService from "../api/services/AuthService";
+import TransactionComponent from "../components/transactions/TransactionComponent";
+import StatisticComponent from "../components/statistics/StatisticComponent";
+import CategoryStatisticComponent from "../components/categoryStatistics/CategoryStatisticComponent";
 
 const BasicRouter: React.FC = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(
-    AuthService.isAuthenticated()
-  );
-
   return (
     <>
       <Header />
       <Routes>
-        <Route
-          path="/login"
-          element={<Login setIsAuthenticated={setIsAuthenticated} />}
-        />
+        {/* Публічні сторінки */}
+        <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
 
-        <Route element={<ProtectedRoute isAuthenticated={isAuthenticated} />}>
+        {/* Приватні сторінки */}
+        <Route element={<ProtectedRoute />}>
           <Route path="/bank" element={<BankList />} />
           <Route path="/transaction" element={<TransactionComponent />} />
           <Route path="/statistic" element={<StatisticComponent />} />
           <Route path="/category" element={<CategoryStatisticComponent />} />
         </Route>
 
+        {/* Редирект на логін для невідомих маршрутів */}
         <Route path="*" element={<Navigate to="/login" />} />
       </Routes>
     </>

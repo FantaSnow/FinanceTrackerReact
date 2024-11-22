@@ -1,30 +1,27 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import AuthService from "../api/services/AuthService";
-import "../css/AuthTile.css";
+import { useAuth } from "../../api/AuthContext";
+import "../../css/AuthTile.css";
 
-interface LoginProps {
-  setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
-}
-
-const Login: React.FC<LoginProps> = ({ setIsAuthenticated }) => {
+const Login: React.FC = () => {
   const [login, setLogin] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const { login: authLogin } = useAuth();
   const navigate = useNavigate();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null); // Очистити попередні помилки
     try {
-      const success = await AuthService.login(login, password);
+      const success = await authLogin(login, password);
       if (success) {
-        setIsAuthenticated(AuthService.isAuthenticated());
         navigate("/transaction");
       } else {
         setError("Не вдалося увійти. Перевірте логін або пароль.");
       }
     } catch (err) {
-      setError("Помилка під час входу.");
+      setError("Помилка під час входу. Спробуйте пізніше.");
     }
   };
 
