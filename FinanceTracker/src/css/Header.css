@@ -52,6 +52,14 @@ nav a:hover {
     color: #DDD;
 }
 
+.content {
+    height: 100%;
+}
+
+.layout {
+    height: 100%;
+}
+
 #logo {
     font-size: 2em;
     font-weight: 700;

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import "../../css/StatisticComponent.css";
-import { CategoryDto } from "../../api/dto/CategoryDto";
+import "../../../css/StatisticComponent.css";
+import { CategoryDto } from "../../../api/dto/CategoryDto";
 
 type Props = {
   startDate: string;

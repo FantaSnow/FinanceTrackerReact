@@ -1,5 +1,5 @@
 import React from "react";
-import "../../css/StatisticComponent.css";
+import "../../../css/StatisticComponent.css";
 
 type Props = {
   activeForm: string;

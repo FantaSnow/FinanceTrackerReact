@@ -1,227 +1,114 @@
 :root {
-    --card-height: 900px;
-    --card-width: calc(var(--card-height) / 1.5);
-    --input-color: rgb(88, 199, 250);
-    --background-color: #191c29;
-
+    --card-heightCategory: 300px;
+    --card-widthCategory: 550px;
+    --input-colorCategory: rgb(88, 199, 250);
+    --positive-colorCategory: rgb(88, 250, 88);
+    --negative-colorCategory: rgb(255, 88, 88);
+    --background-colorCategory: #191c29;
+    --background-color-lightCategory: #24283a;
+    --shadow-colorCategory: rgba(0, 0, 0, 0.5);
+    --text-colorCategory: #ffffff;
+    --text-color-mutedCategory: #9aa5b1;
 }
 
-.rowDate {
+.Card_Category {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 70%;
+    gap: 20px;
+    margin: 30px 0;
+}
+
+.Container_Category {
     display: flex;
     flex-direction: column;
-    margin: 0px 50px;
-    text-align: center;
-    font-size: 2em;
-    width: 25%;
-
-}
-
-.statistic-selector {
-    width: 100%;
-    height: 100%;
-    margin: 5px;
-    padding: 8px;
-    color: var(--input-color);
-    background: #212534;
-    border: 1px solid var(--input-color);
-    border-radius: 4px;
-}
-
-.date-wrapper {
-    width: 100%;
-}
-
-.date-wrapper input {
-    width: 100%;
-    box-sizing: border-box;
-    padding: 5px;
-    font-size: 1em;
-}
-
-
-
-.date-selector {
-    margin-top: 50px;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-}
-
-.CardContainer {
-    display: flex;
-    justify-content: center;
     align-items: center;
-    width: 100%;
-    margin-bottom: 50px;
+    min-height: 1000px;
 }
 
-.CardPlus,
-.CardMinus {
-    background: var(--background-color);
-    height: var(--card-height);
-    margin: 10px;
-    border-radius: 46px;
+.RowStatistic {
     display: flex;
-    flex-direction: row;
-    align-items: center;
-    text-align: center;
-    font-size: 2.5em;
-    color: var(--input-color);
-    position: relative;
-    padding: 1rem;
-    transition: width 0.3s ease-in-out;
-}
-
-
-.CardPlus.active {
-    width: 70%;
-}
-
-.CardMinus.active {
-    width: 70%;
-}
-
-.CardPlus:not(.active) {
-    width: 20%;
-}
-
-.CardMinus:not(.active) {
-    width: 20%;
-}
-
-.StatisticNameDiv {
     justify-content: space-around;
-    margin-top: 40px;
+    margin: 40px;
     width: 100%;
-    display: flex;
-    flex-direction: row;
 }
 
-.StatisticNameDiv {
-    margin-top: 40px;
-    width: 90%;
-    display: flex;
-    flex-direction: row;
-    place-items: center;
-
+.TopName_Category {
+    align-items: center;
+    font-size: clamp(1.5rem, 4vw, 2rem);
+    /* Динамічний розмір шрифта */
+    color: var(--input-colorCategory);
 }
 
-.StatisticName.active {
-
-    color: rgb(88, 199, 250);
-    font-size: 44px;
-    font-weight: bold;
-
-
-
-}
-
-.StatisticName {
-    font-size: 24px;
-    cursor: pointer;
-    transition: color 0.4s ease, font-size 0.4s ease, font-weight 0.4s ease;
-}
-
-.StatisticCard {
+.card_Category {
+    background: linear-gradient(145deg, var(--background-color-lightCategory), var(--background-colorCategory));
+    height: var(--card-heightCategory);
+    width: var(--card-widthCategory);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 5px 15px var(--shadow-colorCategory);
     display: flex;
     flex-direction: column;
     justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: var(--text-color);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.SumPlus {
-    color: RGB(88, 250, 88);
-    font-size: 3vw;
-
+.card_Category:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 20px var(--shadow-colorCategory);
 }
 
-.SumMinus {
-    color: RGB(255, 0, 0);
-    font-size: 3vw;
-
+.CardPlus_Category {
+    border: 2px solid var(--positive-colorCategory);
 }
 
-.files-table {
-    box-shadow: 0 0 0 0;
+.CardMinus_Category {
+    border: 2px solid var(--negative-colorCategory);
 }
 
-
-
-.SumPlus2,
-.SumMinus2 {
-    font-size: 3vw;
-}
-
-.SumMinus {
-    color: RGB(255, 0, 0);
-    font-size: 3vw;
-
-}
-
-.SumPlusSecond {
-    font-size: 2vw;
-
-}
-
-.SumMinusSecond {
-    font-size: 2vw;
-
-}
-
-.CardPlus .StatisticCard,
-.CardMinus .StatisticCard {
-
+.StatisticCard_Category {
     width: 100%;
-    transition: width 0.4 ease-out;
-    height: 100%;
-    background-color: rgb(88, 199, 250, 0);
-}
-
-.CardMinus {
     display: flex;
-    flex-direction: row-reverse;
-
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
 }
 
-.CardPlus.active .StatisticCard {
-    width: 29%;
+.StatisticName_Category {
+    font-size: clamp(1rem, 5vw, 1.2rem);
+    font-weight: bold;
+    text-transform: uppercase;
+    color: var(--input-colorCategory);
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-.CardMinus.active .StatisticCard {
-    width: 29%;
+.SumPlus_Category,
+.SumMinus_Category {
+    font-size: clamp(2rem, 3vw, 2rem);
+    font-weight: bold;
 }
 
-.CardPlus .StatisticTablePlus,
-.CardMinus .StatisticTablePlus {
-    justify-content: center;
-    display: flex;
-    width: 0%;
-    height: 100%;
-    transition: width 0.3s ease-out;
+.SumPlus_Category {
+    color: var(--positive-colorCategory);
 }
 
-
-.CardPlus.active .StatisticTablePlus {
-    width: 70%;
+.SumMinus_Category {
+    color: var(--negative-colorCategory);
 }
 
-.CardMinus.active .StatisticTablePlus {
-    width: 70%;
+.card_Category div:last-child {
+    font-size: 0.9rem;
+    color: var(--text-color-mutedCategory);
 }
 
-.CardPlus .StatisticTableMinus,
-.CardMinus .StatisticTableMinus {
-    justify-content: center;
-    display: flex;
-    width: 0%;
-    height: 100%;
-    transition: width 0.3s ease-out;
-}
-
-
-.CardPlus.active .StatisticTableMinus {
-    width: 70%;
-}
-
-.CardMinus.active .StatisticTableMinus {
-    width: 70%;
+.StatisticName_Category:hover {
+    color: var(--text-color);
+    text-shadow: 0 0 5px var(--input-colorCategory);
 }

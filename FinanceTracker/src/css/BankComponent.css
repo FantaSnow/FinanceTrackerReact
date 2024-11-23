@@ -1,9 +1,8 @@
 :root {
-    --card-height: 500px;
     --card-width: calc(var(--card-height) / 1.5);
     --input-color: rgb(88, 199, 250);
     --background-color: #191c29;
-
+    height: 100%;
 }
 
 body {
@@ -16,6 +15,9 @@ body {
 
 }
 
+.Main {
+    height: 100%;
+}
 
 .bank-container {
     display: flex;

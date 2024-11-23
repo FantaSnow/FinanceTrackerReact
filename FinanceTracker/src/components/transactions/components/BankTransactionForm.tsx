@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { BankDto, BankAddBalanceDto } from "../../api/dto/BankDto";
-import "../../css/Transaction.css";
-import BankService from "../../api/services/BankService";
+import { BankDto, BankAddBalanceDto } from "../../../api/dto/BankDto";
+import "../../../css/Transaction.css";
+import BankService from "../../../api/services/BankService";
 
 type Props = {
   banks: BankDto[];

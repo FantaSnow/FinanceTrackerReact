@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { TransactionDto } from "../../api/dto/TransactionDto";
-import { CategoryDto } from "../../api/dto/CategoryDto";
-import "../../css/Transaction.css";
+import { TransactionDto } from "../../../api/dto/TransactionDto";
+import { CategoryDto } from "../../../api/dto/CategoryDto";
+import "../../../css/Transaction.css";
 import Pagination from "./Pagination";
-import TransactionService from "../../api/services/TransactionService";
+import TransactionService from "../../../api/services/TransactionService";
 
 type Props = {
   transactions: TransactionDto[];

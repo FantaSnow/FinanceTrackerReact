@@ -1,7 +1,16 @@
-#root {
-  width: 100%;
+/* index.css or global.css */
 
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
 }
+
+#root {
+  height: 100%;
+}
+
 
 .card {
   padding: 2em;

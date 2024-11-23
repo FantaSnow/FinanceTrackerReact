@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { CategoryDto } from "../../api/dto/CategoryDto";
-import "../../css/Transaction.css";
-import TransactionService from "../../api/services/TransactionService";
+import { CategoryDto } from "../../../api/dto/CategoryDto";
+import "../../../css/Transaction.css";
+import TransactionService from "../../../api/services/TransactionService";
 
 type Props = {
   categories: CategoryDto[];
