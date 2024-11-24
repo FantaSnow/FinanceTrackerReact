@@ -1,9 +1,9 @@
 import React from "react";
-import "../../css/StatisticComponent.css";
-import TransactionTable from "../transactions/TransactionTable";
-import { TransactionDto } from "../../api/dto/TransactionDto";
-import { CategoryDto } from "../../api/dto/CategoryDto";
-import { StatisticDto } from "../../api/dto/StatisticDto";
+import "../../../css/StatisticComponent.css";
+import TransactionTable from "../../transactions/components/TransactionTable";
+import { TransactionDto } from "../../../api/dto/TransactionDto";
+import { CategoryDto } from "../../../api/dto/CategoryDto";
+import { StatisticDto } from "../../../api/dto/StatisticDto";
 
 type Props = {
   activeForm: string;

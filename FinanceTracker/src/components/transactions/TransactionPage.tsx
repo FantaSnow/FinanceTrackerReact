@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import TransactionFormToggle from "./TransactionFormToggle";
-import CreateTransactionForm from "./CreateTransactionForm";
-import BankTransactionForm from "./BankTransactionForm";
-import TransactionTable from "./TransactionTable";
-import BalanceDisplay from "./BalanceDisplay";
+import TransactionFormToggle from "./components/TransactionFormToggle";
+import CreateTransactionForm from "./components/CreateTransactionForm";
+import BankTransactionForm from "./components/BankTransactionForm";
+import TransactionTable from "./components/TransactionTable";
+import BalanceDisplay from "./components/BalanceDisplay";
 import TransactionService from "../../api/services/TransactionService";
 import CategoryService from "../../api/services/CategoryService";
 import UserService from "../../api/services/UserService";
@@ -12,9 +12,8 @@ import { TransactionDto } from "../../api/dto/TransactionDto";
 import { CategoryDto } from "../../api/dto/CategoryDto";
 import { BankDto } from "../../api/dto/BankDto";
 import "../../css/Transaction.css";
-import Footer from "../leyouts/Footer";
 
-const TransactionComponent: React.FC = () => {
+const TransactionPage: React.FC = () => {
   const [transactions, setTransactions] = useState<TransactionDto[]>([]);
   const [categories, setCategories] = useState<CategoryDto[]>([]);
   const [banks, setBanks] = useState<BankDto[]>([]);
@@ -120,9 +119,8 @@ const TransactionComponent: React.FC = () => {
           <BalanceDisplay balance={balance} />
         </div>
       </div>
-      <Footer />
     </div>
   );
 };
 
-export default TransactionComponent;
+export default TransactionPage;

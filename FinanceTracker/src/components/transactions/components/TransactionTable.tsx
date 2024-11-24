@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import { TransactionDto } from "../../api/dto/TransactionDto";
-import { CategoryDto } from "../../api/dto/CategoryDto";
-import "../../css/Transaction.css";
+import { TransactionDto } from "../../../api/dto/TransactionDto";
+import { CategoryDto } from "../../../api/dto/CategoryDto";
+import "../../../css/Transaction.css";
 import Pagination from "./Pagination";
-import TransactionService from "../../api/services/TransactionService";
+import TransactionService from "../../../api/services/TransactionService";
+import { useNotification } from "../../notification/NotificationProvider";
 
 type Props = {
   transactions: TransactionDto[];
@@ -26,6 +27,8 @@ const TransactionTable: React.FC<Props> = ({
   fetchBalance,
   setTransactions,
 }) => {
+  const { addNotification } = useNotification();
+
   const [editingTransactionId, setEditingTransactionId] = useState<
     string | null
   >(null);
@@ -44,7 +47,9 @@ const TransactionTable: React.FC<Props> = ({
       );
       setTransactions(updatedTransactions);
       fetchBalance();
+      addNotification("Транзакцію успішно видалено.", "success");
     } catch (error) {
+      addNotification("Не вдалось видалити транзакцію.", "error");
       console.error("Failed to delete transaction", error);
     }
   };
@@ -69,7 +74,10 @@ const TransactionTable: React.FC<Props> = ({
         setEditingTransactionId(null);
         setUpdatedTransaction(null);
         fetchBalance();
+        addNotification("Транзакцію успішно збережено.", "success");
       } catch (error) {
+        addNotification("Не вдалось зберегти транзакцію.", "error");
+
         console.error("Failed to save transaction", error);
       }
     }

@@ -1,35 +1,35 @@
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-import Header from "../components/leyouts/Header";
+import Layout from "../components/leyouts/Layout";
 import Login from "../components/Register/Login";
 import Register from "../components/Register/Register";
-import BankList from "../components/banks/BankList";
+import BankList from "../components/banks/BankPage";
 import ProtectedRoute from "./ProtectedRoute";
-import TransactionComponent from "../components/transactions/TransactionComponent";
-import StatisticComponent from "../components/statistics/StatisticComponent";
-import CategoryStatisticComponent from "../components/categoryStatistics/CategoryStatisticComponent";
+import TransactionPage from "../components/transactions/TransactionPage";
+import StatisticPage from "../components/statistics/StatisticPage";
+import CategoryStatisticComponent from "../components/categoryStatistics/CategoryStatisticPage";
 
 const BasicRouter: React.FC = () => {
   return (
-    <>
-      <Header />
-      <Routes>
-        {/* Публічні сторінки */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+    <Routes>
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
 
-        {/* Приватні сторінки */}
-        <Route element={<ProtectedRoute />}>
-          <Route path="/bank" element={<BankList />} />
-          <Route path="/transaction" element={<TransactionComponent />} />
-          <Route path="/statistic" element={<StatisticComponent />} />
-          <Route path="/category" element={<CategoryStatisticComponent />} />
-        </Route>
+      <Route
+        element={
+          <Layout>
+            <ProtectedRoute />
+          </Layout>
+        }
+      >
+        <Route path="/bank" element={<BankList />} />
+        <Route path="/transaction" element={<TransactionPage />} />
+        <Route path="/statistic" element={<StatisticPage />} />
+        <Route path="/category" element={<CategoryStatisticComponent />} />
+      </Route>
 
-        {/* Редирект на логін для невідомих маршрутів */}
-        <Route path="*" element={<Navigate to="/login" />} />
-      </Routes>
-    </>
+      <Route path="*" element={<Navigate to="/login" />} />
+    </Routes>
   );
 };
 

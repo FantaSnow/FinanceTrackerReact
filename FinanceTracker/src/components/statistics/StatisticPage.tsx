@@ -1,18 +1,17 @@
 import React, { useState, useEffect } from "react";
 import "../../css/StatisticComponent.css";
-import StatisticSelectDate from "./StatisticSelectDate";
-import StatisticFormToggle from "./StatisticFormToggle";
+import StatisticSelectDate from "./components/StatisticSelectDate";
+import StatisticFormToggle from "./components/StatisticFormToggle";
 import { TransactionDto } from "../../api/dto/TransactionDto";
-import StatisticCard from "./StatisticCard";
+import StatisticCard from "./components/StatisticCard";
 import { CategoryDto } from "../../api/dto/CategoryDto";
-import Footer from "../leyouts/Footer";
 import UserService from "../../api/services/UserService";
 import TransactionService from "../../api/services/TransactionService";
 import CategoryService from "../../api/services/CategoryService";
 import StatisticService from "../../api/services/StatisticService";
 import { StatisticDto } from "../../api/dto/StatisticDto";
 
-const StatisticComponent: React.FC = () => {
+const StatisticPage: React.FC = () => {
   const [activeForm, setActiveForm] = useState<string>("CardPlusActive");
   const [transactions, setTransactions] = useState<TransactionDto[]>([]);
   const [categories, setCategories] = useState<CategoryDto[]>([]);
@@ -174,9 +173,8 @@ const StatisticComponent: React.FC = () => {
         setTransactions={setTransactions}
         fetchBalance={fetchBalance}
       />
-      <Footer />
     </div>
   );
 };
 
-export default StatisticComponent;
+export default StatisticPage;

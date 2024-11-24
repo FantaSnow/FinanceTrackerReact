@@ -1,5 +1,5 @@
 import React from "react";
-import "../../css/Transaction.css";
+import "../../../css/Transaction.css";
 
 type Props = {
   currentPage: number;

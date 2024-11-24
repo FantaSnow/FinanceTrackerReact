@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import "../../css/CategoryStatisticComponent.css";
+import "../../../css/CategoryStatisticComponent.css";
 
 type Props = {
   startDate: string;
