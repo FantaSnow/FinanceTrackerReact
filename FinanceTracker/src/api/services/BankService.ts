@@ -38,16 +38,6 @@ class BankService {
     return await this.httpClient.put<BankDto>(`/update/${bankId}`, data);
   }
 
-  async addToBalance(
-    bankId: string,
-    data: BankAddBalanceDto
-  ): Promise<BankDto> {
-    return await this.httpClient.put<BankDto>(
-      `/addToBalance/${bankId}/${data.balance}`,
-      null
-    );
-  }
-
   async deleteBank(bankId: string): Promise<void> {
     await this.httpClient.delete(`/delete/${bankId}`);
   }

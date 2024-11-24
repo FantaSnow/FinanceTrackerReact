@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { BankDto, BankAddBalanceDto } from "../../../api/dto/BankDto";
+import { BankTransactionCreateDto } from "../../../api/dto/BankTransactionDto";
 import "../../../css/Transaction.css";
 import BankService from "../../../api/services/BankService";
+import BankTransactionService from "../../../api/services/BankTransactionService";
 import { useNotification } from "../../notification/NotificationProvider";
 
 type Props = {
@@ -54,8 +56,8 @@ const BankTransactionForm: React.FC<Props> = ({
     }
 
     try {
-      const balanceDto: BankAddBalanceDto = { balance: parsedSum };
-      await BankService.addToBalance(newTransactionBankId, balanceDto);
+      const balanceDto: BankTransactionCreateDto = { amount: parsedSum };
+      await BankTransactionService.create(newTransactionBankId, balanceDto);
       setNewTransactionSumBank("");
       setNewTransactionBankId(null);
       fetchBalance();
@@ -95,8 +97,8 @@ const BankTransactionForm: React.FC<Props> = ({
     }
 
     try {
-      const balanceDto: BankAddBalanceDto = { balance: -parsedSum };
-      await BankService.addToBalance(newTransactionBankId, balanceDto);
+      const balanceDto: BankTransactionCreateDto = { amount: -parsedSum };
+      await BankTransactionService.create(newTransactionBankId, balanceDto);
       setNewTransactionSumBank("");
       setNewTransactionBankId(null);
       fetchBalance();

@@ -72,7 +72,7 @@ const BankComponent: React.FC = () => {
       try {
         await BankService.deleteBank(bankId);
         setBanks(banks.filter((bank) => bank.bankId !== bankId));
-        addNotification("Банку успішно видалено.", "error");
+        addNotification("Банку успішно видалено.", "success");
       } catch (error) {
         addNotification("Не вдалося видалити банку.", "error");
       }
