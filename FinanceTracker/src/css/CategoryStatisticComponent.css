@@ -36,8 +36,8 @@
 
 .TopName_Category {
     align-items: center;
+    margin-top: 90px;
     font-size: clamp(1.5rem, 4vw, 2rem);
-    /* Динамічний розмір шрифта */
     color: var(--input-colorCategory);
 }
 

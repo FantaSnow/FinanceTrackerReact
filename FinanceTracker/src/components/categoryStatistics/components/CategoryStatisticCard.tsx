@@ -37,7 +37,7 @@ const CategoryStatisticCard: React.FC<Props> = ({
                   Витрати:
                   <div>
                     <span className="SumMinus_Category">
-                      -{category.minusSum.toLocaleString()} $
+                      {category.minusSum.toLocaleString()} $
                     </span>
                   </div>
                 </div>

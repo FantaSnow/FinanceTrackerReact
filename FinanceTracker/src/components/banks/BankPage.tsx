@@ -22,7 +22,8 @@ const BankComponent: React.FC = () => {
       setError("Не вдалося завантажити банки.");
     }
   };
-
+  const calculateProgress = (balance: number, goal: number) =>
+    (balance / goal) * 100;
   useEffect(() => {
     fetchBanks();
   }, []);
@@ -78,31 +79,41 @@ const BankComponent: React.FC = () => {
   return (
     <div>
       <div className="bank-container">
-        {error && <p style={{ color: "red" }}>{error}</p>}
         <div className="new-bank-card">
           <div className="new-bank-card-name">
             <h2>Створити нову банку</h2>
           </div>
-          <input
-            type="text"
-            placeholder="Назва банку"
-            value={newBank.name}
-            onChange={(e) => setNewBank({ ...newBank, name: e.target.value })}
-          />
-          <div className="new-bank-card-balance">Баланс: 0</div>
-          <div className="new-bank-card-balancegoal">
-            <input
-              type="number"
-              placeholder="Цільовий баланс"
-              value={newBank.balanceGoal}
-              onChange={(e) =>
-                setNewBank({
-                  ...newBank,
-                  balanceGoal: parseFloat(e.target.value),
-                })
-              }
-            />
+          <div className="rowCard">
+            <div className="leftCard">
+              <div className="card-icon"></div>
+              <input
+                type="text"
+                placeholder="Назва банку"
+                value={newBank.name}
+                onChange={(e) =>
+                  setNewBank({ ...newBank, name: e.target.value })
+                }
+              />
+            </div>
+            <div className="rightCard">
+              <div className="new-bank-card-balance">Баланс: 0</div>
+              <div className="new-bank-card-balancegoal">
+                <input
+                  type="number"
+                  placeholder="Цільовий баланс"
+                  value={newBank.balanceGoal}
+                  onChange={(e) =>
+                    setNewBank({
+                      ...newBank,
+                      balanceGoal: parseFloat(e.target.value),
+                    })
+                  }
+                />
+              </div>
+            </div>
           </div>
+          {error && <p style={{ color: "red" }}>{error}</p>}
+
           <button onClick={handleCreateBank}>Додати банку</button>
         </div>
         <h1>Список банків</h1>
@@ -115,35 +126,56 @@ const BankComponent: React.FC = () => {
               }`}
               key={bank.bankId}
             >
-              <div className="card-name">
-                {editingBankId === bank.bankId ? (
-                  <input
-                    type="text"
-                    value={editedBank?.name}
-                    onChange={(e) =>
-                      setEditedBank({ ...editedBank!, name: e.target.value })
-                    }
-                  />
-                ) : (
-                  bank.name
-                )}
+              <div className="rowCard">
+                <div className="leftCard">
+                  <div className="card-icon"></div>
+                  <div className="card-name">
+                    {editingBankId === bank.bankId ? (
+                      <input
+                        type="text"
+                        value={editedBank?.name}
+                        onChange={(e) =>
+                          setEditedBank({
+                            ...editedBank!,
+                            name: e.target.value,
+                          })
+                        }
+                      />
+                    ) : (
+                      bank.name
+                    )}
+                  </div>
+                </div>
+                <div className="rightCard">
+                  <div className="card-balance">Баланс: {bank.balance}</div>
+                  <div className="card-goal">
+                    {editingBankId === bank.bankId ? (
+                      <input
+                        type="number"
+                        value={editedBank?.balanceGoal}
+                        onChange={(e) =>
+                          setEditedBank({
+                            ...editedBank!,
+                            balanceGoal: parseFloat(e.target.value),
+                          })
+                        }
+                      />
+                    ) : (
+                      `Ціль: ${bank.balanceGoal}`
+                    )}
+                  </div>
+                </div>
               </div>
-              <div className="card-balance">Баланс: {bank.balance}</div>
-              <div className="card-goal">
-                {editingBankId === bank.bankId ? (
-                  <input
-                    type="number"
-                    value={editedBank?.balanceGoal}
-                    onChange={(e) =>
-                      setEditedBank({
-                        ...editedBank!,
-                        balanceGoal: parseFloat(e.target.value),
-                      })
-                    }
-                  />
-                ) : (
-                  `Ціль: ${bank.balanceGoal}`
-                )}
+              <div className="card-progress">
+                <div
+                  className="card-progress-bar"
+                  style={{
+                    width: `${calculateProgress(
+                      bank.balance,
+                      bank.balanceGoal
+                    )}%`,
+                  }}
+                ></div>
               </div>
               <div className="card-actions">
                 {editingBankId === bank.bankId ? (
@@ -154,7 +186,7 @@ const BankComponent: React.FC = () => {
                   </button>
                 )}
                 <button onClick={() => handleDeleteBank(bank.bankId)}>
-                  Видалити
+                  Закрити Банку
                 </button>
               </div>
             </div>
