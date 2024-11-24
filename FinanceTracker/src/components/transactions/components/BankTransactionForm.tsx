@@ -10,12 +10,14 @@ type Props = {
   banks: BankDto[];
   balance: number;
   fetchBalance: () => void;
+  fetchBanks: () => void; // Додана функція
 };
 
 const BankTransactionForm: React.FC<Props> = ({
   banks,
   balance,
   fetchBalance,
+  fetchBanks,
 }) => {
   const { addNotification } = useNotification();
   const [newTransactionBankId, setNewTransactionBankId] = useState<
@@ -59,7 +61,7 @@ const BankTransactionForm: React.FC<Props> = ({
       const balanceDto: BankTransactionCreateDto = { amount: parsedSum };
       await BankTransactionService.create(newTransactionBankId, balanceDto);
       setNewTransactionSumBank("");
-      setNewTransactionBankId(null);
+      fetchBanks();
       fetchBalance();
       addNotification("Поповненя банки пройшло успішно", "success");
     } catch (error) {
@@ -100,7 +102,7 @@ const BankTransactionForm: React.FC<Props> = ({
       const balanceDto: BankTransactionCreateDto = { amount: -parsedSum };
       await BankTransactionService.create(newTransactionBankId, balanceDto);
       setNewTransactionSumBank("");
-      setNewTransactionBankId(null);
+      fetchBanks();
       fetchBalance();
       addNotification("Зняття балансу з банки пройшло успішно", "success");
     } catch (error) {

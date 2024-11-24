@@ -49,7 +49,6 @@ const CreateTransactionForm: React.FC<Props> = ({
         categoryId: newTransactionCategoryId,
       });
       setNewTransactionSum("");
-      setNewTransactionCategoryId(null);
       fetchTransactions();
       fetchBalance();
       addNotification("Транзакція доходу створена успішно.", "success");

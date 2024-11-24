@@ -99,6 +99,7 @@ const TransactionPage: React.FC = () => {
               banks={banks}
               balance={balance}
               fetchBalance={fetchBalance}
+              fetchBanks={fetchBanks} // Передаємо функцію оновлення
             />
           )}
         </div>
