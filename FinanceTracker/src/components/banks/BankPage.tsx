@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import BankService from "../../api/services/BankService";
 import { BankDto, BankCreateDto } from "../../api/dto/BankDto";
+import { useNotification } from "../notification/NotificationProvider";
 import "../../css/BankComponent.css";
-import Footer from "../leyouts/Footer";
 
 const BankComponent: React.FC = () => {
   const [banks, setBanks] = useState<BankDto[]>([]);
@@ -10,16 +10,16 @@ const BankComponent: React.FC = () => {
     name: "",
     balanceGoal: 0,
   });
-  const [error, setError] = useState<string | null>(null);
   const [editingBankId, setEditingBankId] = useState<string | null>(null);
   const [editedBank, setEditedBank] = useState<BankDto | null>(null);
-
+  const { addNotification } = useNotification();
   const fetchBanks = async () => {
     try {
       const data = await BankService.getAllBanksByUser();
       setBanks(data);
     } catch (error) {
-      setError("Не вдалося завантажити банки.");
+      console.error("Не вдалося завантажити банки.", error);
+      addNotification("Не вдалося завантажити банки.", "error");
     }
   };
   const calculateProgress = (balance: number, goal: number) =>
@@ -33,8 +33,9 @@ const BankComponent: React.FC = () => {
       const createdBank = await BankService.createBank(newBank);
       setBanks([...banks, createdBank]);
       setNewBank({ name: "", balanceGoal: 0 });
+      addNotification("Банку успішно створено.", "success");
     } catch (error) {
-      setError("Не вдалося створити банку.");
+      addNotification("Не вдалося створити банку.", "error");
     }
   };
 
@@ -57,8 +58,9 @@ const BankComponent: React.FC = () => {
         );
         setEditingBankId(null);
         setEditedBank(null);
+        addNotification("Зміни успішно внесені", "success");
       } catch (error) {
-        setError("Не вдалося зберегти зміни.");
+        addNotification("Не вдалося зберегти зміни.", "error");
       }
     }
   };
@@ -70,8 +72,9 @@ const BankComponent: React.FC = () => {
       try {
         await BankService.deleteBank(bankId);
         setBanks(banks.filter((bank) => bank.bankId !== bankId));
+        addNotification("Банку успішно видалено.", "error");
       } catch (error) {
-        setError("Не вдалося видалити банк.");
+        addNotification("Не вдалося видалити банку.", "error");
       }
     }
   };
@@ -112,7 +115,6 @@ const BankComponent: React.FC = () => {
               </div>
             </div>
           </div>
-          {error && <p style={{ color: "red" }}>{error}</p>}
 
           <button onClick={handleCreateBank}>Додати банку</button>
         </div>

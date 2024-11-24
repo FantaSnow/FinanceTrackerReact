@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { BankDto, BankAddBalanceDto } from "../../../api/dto/BankDto";
 import "../../../css/Transaction.css";
 import BankService from "../../../api/services/BankService";
+import { useNotification } from "../../notification/NotificationProvider";
 
 type Props = {
   banks: BankDto[];
@@ -14,7 +15,7 @@ const BankTransactionForm: React.FC<Props> = ({
   balance,
   fetchBalance,
 }) => {
-  const [error, setError] = useState<string | null>(null);
+  const { addNotification } = useNotification();
   const [newTransactionBankId, setNewTransactionBankId] = useState<
     string | null
   >(null);
@@ -23,18 +24,24 @@ const BankTransactionForm: React.FC<Props> = ({
 
   const handleDeposit = async () => {
     if (!newTransactionBankId) {
-      setError("Будь ласка, оберіть банку");
+      addNotification("Будь ласка, оберіть банку.", "error");
       return;
     }
 
     const parsedSum = parseFloat(newTransactionSumBank);
     if (isNaN(parsedSum)) {
-      setError("Будь ласка, введіть числове значення для суми");
+      addNotification(
+        "Будь ласка, введіть числове значення для суми.",
+        "error"
+      );
       return;
     }
 
     if (parsedSum <= 0) {
-      setError("Неможна вводити від’ємне число для поповнення");
+      addNotification(
+        "Неможна вводити від’ємне число для поповнення.",
+        "error"
+      );
       return;
     }
 
@@ -42,7 +49,7 @@ const BankTransactionForm: React.FC<Props> = ({
       (bank) => bank.bankId === newTransactionBankId
     );
     if (selectedBank && parsedSum > balance) {
-      setError("У вас недостатньо балансу");
+      addNotification("У вас недостатньо балансу.", "error");
       return;
     }
 
@@ -51,27 +58,31 @@ const BankTransactionForm: React.FC<Props> = ({
       await BankService.addToBalance(newTransactionBankId, balanceDto);
       setNewTransactionSumBank("");
       setNewTransactionBankId(null);
-      setError(null);
       fetchBalance();
+      addNotification("Поповненя банки пройшло успішно", "success");
     } catch (error) {
-      console.error("Failed to create bank transaction", error);
+      console.error("Failed to deposit bank transaction", error);
+      addNotification("Не вдалось створити транзакцію для банки.", "error");
     }
   };
 
   const handleWithdraw = async () => {
     if (!newTransactionBankId) {
-      setError("Будь ласка, оберіть банку");
+      addNotification("Будь ласка, оберіть банку.", "error");
       return;
     }
 
     const parsedSum = parseFloat(newTransactionSumBank);
     if (isNaN(parsedSum)) {
-      setError("Будь ласка, введіть числове значення для суми");
+      addNotification(
+        "Будь ласка, введіть числове значення для суми.",
+        "error"
+      );
       return;
     }
 
     if (parsedSum <= 0) {
-      setError("Неможна вводити від’ємне число для зняття");
+      addNotification("Неможна вводити від’ємне число для зняття.", "error");
       return;
     }
 
@@ -79,7 +90,7 @@ const BankTransactionForm: React.FC<Props> = ({
       (bank) => bank.bankId === newTransactionBankId
     );
     if (selectedBank && parsedSum > selectedBank.balance) {
-      setError("У вас недостатньо балансу в банку");
+      addNotification("У вас недостатньо балансу в банці.", "error");
       return;
     }
 
@@ -88,10 +99,11 @@ const BankTransactionForm: React.FC<Props> = ({
       await BankService.addToBalance(newTransactionBankId, balanceDto);
       setNewTransactionSumBank("");
       setNewTransactionBankId(null);
-      setError(null);
       fetchBalance();
+      addNotification("Зняття балансу з банки пройшло успішно", "success");
     } catch (error) {
-      console.error("Failed to create bank transaction", error);
+      addNotification("Не вдалось зняти баланс з банки", "error");
+      console.error("Failed to withdraw bank transaction", error);
     }
   };
 
@@ -136,7 +148,6 @@ const BankTransactionForm: React.FC<Props> = ({
           </button>
         </div>
       </div>
-      {error && <div className="errorCreateTransaction error">{error}</div>}
     </div>
   );
 };
