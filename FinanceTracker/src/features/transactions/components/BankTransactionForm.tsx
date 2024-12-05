@@ -1,8 +1,7 @@
 import React, { useState } from "react";
-import { BankDto, BankAddBalanceDto } from "../../../api/dto/BankDto";
+import { BankDto } from "../../../api/dto/BankDto";
 import { BankTransactionCreateDto } from "../../../api/dto/BankTransactionDto";
 import "../../../css/Transaction.css";
-import BankService from "../../../api/services/BankService";
 import BankTransactionService from "../../../api/services/BankTransactionService";
 import { useNotification } from "../../../components/notification/NotificationProvider";
 
@@ -10,7 +9,7 @@ type Props = {
   banks: BankDto[];
   balance: number;
   fetchBalance: () => void;
-  fetchBanks: () => void; // Додана функція
+  fetchBanks: () => void;
 };
 
 const BankTransactionForm: React.FC<Props> = ({
@@ -26,88 +25,49 @@ const BankTransactionForm: React.FC<Props> = ({
   const [newTransactionSumBank, setNewTransactionSumBank] =
     useState<string>("");
 
-  const handleDeposit = async () => {
+  const handleTransaction = async (isDeposit: boolean) => {
     if (!newTransactionBankId) {
       addNotification("Будь ласка, оберіть банку.", "error");
       return;
     }
 
     const parsedSum = parseFloat(newTransactionSumBank);
-    if (isNaN(parsedSum)) {
-      addNotification(
-        "Будь ласка, введіть числове значення для суми.",
-        "error"
-      );
-      return;
-    }
-
-    if (parsedSum <= 0) {
-      addNotification(
-        "Неможна вводити від’ємне число для поповнення.",
-        "error"
-      );
+    if (isNaN(parsedSum) || parsedSum <= 0) {
+      addNotification("Неправильна сума", "error");
       return;
     }
 
     const selectedBank = banks.find(
       (bank) => bank.bankId === newTransactionBankId
     );
-    if (selectedBank && parsedSum > balance) {
-      addNotification("У вас недостатньо балансу.", "error");
-      return;
-    }
-
-    try {
-      const balanceDto: BankTransactionCreateDto = { amount: parsedSum };
-      await BankTransactionService.create(newTransactionBankId, balanceDto);
-      setNewTransactionSumBank("");
-      fetchBanks();
-      fetchBalance();
-      addNotification("Поповненя банки пройшло успішно", "success");
-    } catch (error) {
-      console.error("Failed to deposit bank transaction", error);
-      addNotification("Не вдалось створити транзакцію для банки.", "error");
-    }
-  };
-
-  const handleWithdraw = async () => {
-    if (!newTransactionBankId) {
-      addNotification("Будь ласка, оберіть банку.", "error");
-      return;
-    }
-
-    const parsedSum = parseFloat(newTransactionSumBank);
-    if (isNaN(parsedSum)) {
+    const sumCheck = isDeposit
+      ? parsedSum > balance
+      : parsedSum > (selectedBank ? selectedBank.balance : 0);
+    if (sumCheck) {
       addNotification(
-        "Будь ласка, введіть числове значення для суми.",
+        isDeposit
+          ? "У вас недостатньо балансу."
+          : "У вас недостатньо балансу в банці.",
         "error"
       );
       return;
     }
 
-    if (parsedSum <= 0) {
-      addNotification("Неможна вводити від’ємне число для зняття.", "error");
-      return;
-    }
-
-    const selectedBank = banks.find(
-      (bank) => bank.bankId === newTransactionBankId
-    );
-    if (selectedBank && parsedSum > selectedBank.balance) {
-      addNotification("У вас недостатньо балансу в банці.", "error");
-      return;
-    }
-
     try {
-      const balanceDto: BankTransactionCreateDto = { amount: -parsedSum };
-      await BankTransactionService.create(newTransactionBankId, balanceDto);
+      const amount = isDeposit ? parsedSum : -parsedSum;
+      await BankTransactionService.create(newTransactionBankId, { amount });
       setNewTransactionSumBank("");
       fetchBanks();
       fetchBalance();
-      addNotification("Зняття балансу з банки пройшло успішно", "success");
+      addNotification(
+        isDeposit
+          ? "Поповненя банки пройшло успішно"
+          : "Зняття балансу з банки пройшло успішно",
+        "success"
+      );
     } catch (error) {
-      addNotification("Не вдалось зняти баланс з банки", "error");
-      console.error("Failed to withdraw bank transaction", error);
+      console.error("Failed to process bank transaction", error);
+      addNotification("Не вдалось виконати операцію з банком.", "error");
     }
   };
 
@@ -144,10 +104,16 @@ const BankTransactionForm: React.FC<Props> = ({
           ))}
         </select>
         <div className="Buttondiv">
-          <button className="ButtonTransactionCreate" onClick={handleDeposit}>
+          <button
+            className="ButtonTransactionCreate"
+            onClick={() => handleTransaction(true)}
+          >
             Поповнити
           </button>
-          <button className="ButtonTransactionCreate" onClick={handleWithdraw}>
+          <button
+            className="ButtonTransactionCreate"
+            onClick={() => handleTransaction(false)}
+          >
             Зняти
           </button>
         </div>

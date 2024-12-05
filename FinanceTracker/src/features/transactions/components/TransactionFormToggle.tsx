@@ -9,25 +9,30 @@ type Props = {
 const TransactionFormToggle: React.FC<Props> = ({
   activeForm,
   setActiveForm,
-}) => (
-  <div className="TranasctionNameDiv">
-    <h1
-      className={`TransactionName ${
-        activeForm === "createTransaction" ? "active" : ""
-      }`}
-      onClick={() => setActiveForm("createTransaction")}
-    >
-      Створити транзакцію
-    </h1>
-    <h1
-      className={`TransactionName ${
-        activeForm === "interactionWithBank" ? "active" : ""
-      }`}
-      onClick={() => setActiveForm("interactionWithBank")}
-    >
-      Взаємодія з банкою
-    </h1>
-  </div>
-);
+}) => {
+  const handleCreateTransaction = () => setActiveForm("createTransaction");
+  const handleInteractionWithBank = () => setActiveForm("interactionWithBank");
+
+  return (
+    <div className="TranasctionNameDiv">
+      <h1
+        className={`TransactionName ${
+          activeForm === "createTransaction" ? "active" : ""
+        }`}
+        onClick={handleCreateTransaction}
+      >
+        Створити транзакцію
+      </h1>
+      <h1
+        className={`TransactionName ${
+          activeForm === "interactionWithBank" ? "active" : ""
+        }`}
+        onClick={handleInteractionWithBank}
+      >
+        Взаємодія з банкою
+      </h1>
+    </div>
+  );
+};
 
 export default TransactionFormToggle;

@@ -25,56 +25,33 @@ const TransactionPage: React.FC = () => {
   const [totalPages, setTotalPages] = useState(1);
   const itemsPerPage = 9;
 
-  const fetchBalance = async () => {
+  const fetchData = async () => {
     try {
-      const balanceData = await UserService.getBalanceById();
-      setBalance(balanceData.balance);
-    } catch (error) {
-      console.error("Failed to fetch balance", error);
-    }
-  };
+      const [balanceData, transactionsData, categoriesData, banksData] =
+        await Promise.all([
+          UserService.getBalanceById(),
+          TransactionService.getAllByUser(currentPage, itemsPerPage),
+          CategoryService.getAllCategories(),
+          BankService.getAllBanksByUser(),
+        ]);
 
-  const fetchTransactions = async () => {
-    try {
-      const data = await TransactionService.getAllByUser(
-        currentPage,
-        itemsPerPage
-      );
+      setBalance(balanceData.balance);
       setTransactions(
-        data.sort(
+        transactionsData.sort(
           (a, b) =>
             new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
         )
       );
-      setTotalPages(Math.ceil(data.length / itemsPerPage));
+      setTotalPages(Math.ceil(transactionsData.length / itemsPerPage));
+      setCategories(categoriesData);
+      setBanks(banksData);
     } catch (error) {
-      console.error("Failed to fetch transactions", error);
-    }
-  };
-
-  const fetchCategories = async () => {
-    try {
-      const data = await CategoryService.getAllCategories();
-      setCategories(data);
-    } catch (error) {
-      console.error("Failed to fetch categories", error);
-    }
-  };
-
-  const fetchBanks = async () => {
-    try {
-      const data = await BankService.getAllBanksByUser();
-      setBanks(data);
-    } catch (error) {
-      console.error("Failed to fetch banks", error);
+      console.error("Failed to fetch data", error);
     }
   };
 
   useEffect(() => {
-    fetchCategories();
-    fetchTransactions();
-    fetchBalance();
-    fetchBanks();
+    fetchData();
   }, [currentPage]);
 
   const handlePageChange = (page: number) => setCurrentPage(page);
@@ -91,15 +68,15 @@ const TransactionPage: React.FC = () => {
             <CreateTransactionForm
               categories={categories}
               balance={balance}
-              fetchTransactions={fetchTransactions}
-              fetchBalance={fetchBalance}
+              fetchTransactions={fetchData}
+              fetchBalance={fetchData}
             />
           ) : (
             <BankTransactionForm
               banks={banks}
               balance={balance}
-              fetchBalance={fetchBalance}
-              fetchBanks={fetchBanks} // Передаємо функцію оновлення
+              fetchBalance={fetchData}
+              fetchBanks={fetchData}
             />
           )}
         </div>
@@ -114,7 +91,7 @@ const TransactionPage: React.FC = () => {
               itemsPerPage={itemsPerPage}
               handlePageChange={handlePageChange}
               setTransactions={setTransactions}
-              fetchBalance={fetchBalance}
+              fetchBalance={fetchData}
             />
           </div>
           <BalanceDisplay balance={balance} />

@@ -12,7 +12,7 @@ const Login: React.FC = () => {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null); // Очистити попередні помилки
+    setError(null);
     try {
       const success = await authLogin(login, password);
       if (success) {

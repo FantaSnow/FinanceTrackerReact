@@ -23,79 +23,51 @@ const CreateTransactionForm: React.FC<Props> = ({
   >(null);
   const [newTransactionSum, setNewTransactionSum] = useState<string>("");
 
-  const handleIncomeTransaction = async () => {
+  const handleTransaction = async (isIncome: boolean) => {
     if (!newTransactionCategoryId) {
       addNotification("Будь ласка, оберіть категорію.", "error");
       return;
     }
 
     const parsedSum = parseFloat(newTransactionSum);
-    if (isNaN(parsedSum)) {
+    if (isNaN(parsedSum) || parsedSum <= 0) {
       addNotification(
-        "Будь ласка, введіть числове значення для суми.",
+        isIncome
+          ? "Неможна вводити від’ємне число для доходу."
+          : "Неможна вводити від’ємне число для витрат.",
         "error"
       );
       return;
     }
 
-    if (parsedSum <= 0) {
-      addNotification("Неможна вводити від’ємне число для доходу.", "error");
-      return;
-    }
-
-    try {
-      await TransactionService.create({
-        sum: parsedSum,
-        categoryId: newTransactionCategoryId,
-      });
-      setNewTransactionSum("");
-      fetchTransactions();
-      fetchBalance();
-      addNotification("Транзакція доходу створена успішно.", "success");
-    } catch (error) {
-      console.error("Failed to create income transaction", error);
-      addNotification("Не вдалося створити транзакцію доходу.", "error");
-    }
-  };
-
-  const handleExpenseTransaction = async () => {
-    if (!newTransactionCategoryId) {
-      addNotification("Будь ласка, оберіть категорію.", "error");
-      return;
-    }
-
-    const parsedSum = parseFloat(newTransactionSum);
-    if (isNaN(parsedSum)) {
-      addNotification(
-        "Будь ласка, введіть числове значення для суми.",
-        "error"
-      );
-      return;
-    }
-
-    if (parsedSum <= 0) {
-      addNotification("Неможна вводити від’ємне число для витрат.", "error");
-      return;
-    }
-
-    if (parsedSum > balance) {
+    if (!isIncome && parsedSum > balance) {
       addNotification("У вас недостатньо балансу для цієї витрати.", "error");
       return;
     }
 
     try {
       await TransactionService.create({
-        sum: -parsedSum,
+        sum: isIncome ? parsedSum : -parsedSum,
         categoryId: newTransactionCategoryId,
       });
       setNewTransactionSum("");
       setNewTransactionCategoryId(null);
       fetchTransactions();
       fetchBalance();
-      addNotification("Транзакція витрати створена успішно.", "success");
+      addNotification(
+        isIncome
+          ? "Транзакція доходу створена успішно."
+          : "Транзакція витрати створена успішно.",
+        "success"
+      );
     } catch (error) {
-      console.error("Failed to create expense transaction", error);
-      addNotification("Не вдалося створити транзакцію витрати.", "error");
+      console.error("Failed to create transaction", error);
+      addNotification(
+        isIncome
+          ? "Не вдалося створити транзакцію доходу."
+          : "Не вдалося створити транзакцію витрати.",
+        "error"
+      );
     }
   };
 
@@ -134,13 +106,13 @@ const CreateTransactionForm: React.FC<Props> = ({
         <div className="Buttondiv">
           <button
             className="ButtonTransactionCreate"
-            onClick={handleIncomeTransaction}
+            onClick={() => handleTransaction(true)}
           >
             Дохід
           </button>
           <button
             className="ButtonTransactionCreate"
-            onClick={handleExpenseTransaction}
+            onClick={() => handleTransaction(false)}
           >
             Витрата
           </button>

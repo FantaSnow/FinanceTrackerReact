@@ -31,21 +31,16 @@ const StatisticSelectDate: React.FC<Props> = ({
     startDate.setFullYear(currentDate.getFullYear() - 1);
     endDate.setFullYear(currentDate.getFullYear() + 1);
 
-    const formattedStartDate = startDate.toISOString().split("T")[0];
-    const formattedEndDate = endDate.toISOString().split("T")[0];
-
-    setStartDate(formattedStartDate);
-    setEndDate(formattedEndDate);
+    setStartDate(startDate.toISOString().split("T")[0]);
+    setEndDate(endDate.toISOString().split("T")[0]);
   }, [setStartDate, setEndDate]);
 
   const handleStartDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setStartDate(e.target.value);
-    fetchTransactions();
   };
 
   const handleEndDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEndDate(e.target.value);
-    fetchTransactions();
   };
 
   const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -53,6 +48,10 @@ const StatisticSelectDate: React.FC<Props> = ({
     setSelectedCategory(categoryId);
     onCategorySelect(categoryId);
   };
+
+  useEffect(() => {
+    fetchTransactions();
+  }, [startDate, endDate, selectedCategory]);
 
   return (
     <div className="date-selector">

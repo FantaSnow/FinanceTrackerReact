@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import "../../css/TransactionHistoryModal.css";
 import Pagination from "../../components/Pagination";
 
@@ -14,16 +14,20 @@ const TransactionHistoryModal: React.FC<TransactionHistoryModalProps> = ({
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
-  const totalPages = transactions
-    ? Math.ceil(transactions.length / itemsPerPage)
-    : 0;
+  const totalPages = useMemo(
+    () => Math.ceil(transactions.length / itemsPerPage),
+    [transactions.length]
+  );
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
 
-  const startIdx = (currentPage - 1) * itemsPerPage;
-  const endIdx = currentPage * itemsPerPage;
+  const paginatedTransactions = useMemo(() => {
+    const startIdx = (currentPage - 1) * itemsPerPage;
+    const endIdx = currentPage * itemsPerPage;
+    return transactions.slice(startIdx, endIdx);
+  }, [currentPage, transactions]);
 
   return (
     <div className="modal-overlay-bank">
@@ -37,22 +41,20 @@ const TransactionHistoryModal: React.FC<TransactionHistoryModalProps> = ({
             </tr>
           </thead>
           <tbody>
-            {transactions
-              .slice(startIdx, endIdx) // Слайс для поточної сторінки
-              .map((transaction, index) => (
-                <tr className="files-table-row-bank" key={index}>
-                  <td className="table-cell-bank">
-                    {new Date(transaction.createdAt).toLocaleString("uk-UA", {
-                      year: "numeric",
-                      month: "2-digit",
-                      day: "2-digit",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
-                  </td>
-                  <td className="table-cell-bank">{transaction.amount}$</td>
-                </tr>
-              ))}
+            {paginatedTransactions.map((transaction, index) => (
+              <tr className="files-table-row-bank" key={index}>
+                <td className="table-cell-bank">
+                  {new Date(transaction.createdAt).toLocaleString("uk-UA", {
+                    year: "numeric",
+                    month: "2-digit",
+                    day: "2-digit",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </td>
+                <td className="table-cell-bank">{transaction.amount}$</td>
+              </tr>
+            ))}
           </tbody>
         </table>
         <Pagination

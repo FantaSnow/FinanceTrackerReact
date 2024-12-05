@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { TransactionDto } from "../../../api/dto/TransactionDto";
 import { CategoryDto } from "../../../api/dto/CategoryDto";
 import "../../../css/Transaction.css";
@@ -28,33 +28,36 @@ const TransactionTable: React.FC<Props> = ({
   setTransactions,
 }) => {
   const { addNotification } = useNotification();
-
   const [editingTransactionId, setEditingTransactionId] = useState<
     string | null
   >(null);
   const [updatedTransaction, setUpdatedTransaction] =
     useState<TransactionDto | null>(null);
 
-  const handleEdit = (transaction: TransactionDto) => {
+  const handleEdit = useCallback((transaction: TransactionDto) => {
     setEditingTransactionId(transaction.id);
-    setUpdatedTransaction({ ...transaction });
-  };
-  const handleDelete = async (transactionId: string) => {
-    try {
-      await TransactionService.delete(transactionId);
-      const updatedTransactions = transactions.filter(
-        (transaction) => transaction.id !== transactionId
-      );
-      setTransactions(updatedTransactions);
-      fetchBalance();
-      addNotification("Транзакцію успішно видалено.", "success");
-    } catch (error) {
-      addNotification("Не вдалось видалити транзакцію.", "error");
-      console.error("Failed to delete transaction", error);
-    }
-  };
+    setUpdatedTransaction(transaction);
+  }, []);
 
-  const handleSave = async () => {
+  const handleDelete = useCallback(
+    async (transactionId: string) => {
+      try {
+        await TransactionService.delete(transactionId);
+        const updatedTransactions = transactions.filter(
+          (transaction) => transaction.id !== transactionId
+        );
+        setTransactions(updatedTransactions);
+        fetchBalance();
+        addNotification("Транзакцію успішно видалено.", "success");
+      } catch (error) {
+        addNotification("Не вдалось видалити транзакцію.", "error");
+        console.error("Failed to delete transaction", error);
+      }
+    },
+    [transactions, setTransactions, fetchBalance, addNotification]
+  );
+
+  const handleSave = useCallback(async () => {
     if (updatedTransaction && updatedTransaction.id) {
       try {
         const selectedCategory = categories.find(
@@ -77,11 +80,18 @@ const TransactionTable: React.FC<Props> = ({
         addNotification("Транзакцію успішно збережено.", "success");
       } catch (error) {
         addNotification("Не вдалось зберегти транзакцію.", "error");
-
         console.error("Failed to save transaction", error);
       }
     }
-  };
+  }, [
+    updatedTransaction,
+    categories,
+    transactions,
+    setTransactions,
+    fetchBalance,
+    addNotification,
+  ]);
+
   return (
     <div className="Table">
       <h1 className="TransactionName">Ваші транзакції</h1>
@@ -111,29 +121,17 @@ const TransactionTable: React.FC<Props> = ({
               </div>
               <div className="table-cell column-sum">
                 {editingTransactionId === transaction.id ? (
-                  <div style={{ position: "relative" }}>
-                    <input
-                      type="number"
-                      value={updatedTransaction?.sum || ""}
-                      onChange={(e) =>
-                        setUpdatedTransaction({
-                          ...updatedTransaction!,
-                          sum: Number(e.target.value),
-                        })
-                      }
-                      style={{ paddingRight: "20px" }}
-                    />
-                    <span
-                      style={{
-                        position: "absolute",
-                        right: "10px",
-                        top: "50%",
-                        transform: "translateY(-50%)",
-                      }}
-                    >
-                      $
-                    </span>
-                  </div>
+                  <input
+                    type="number"
+                    value={updatedTransaction?.sum || ""}
+                    onChange={(e) =>
+                      setUpdatedTransaction({
+                        ...updatedTransaction!,
+                        sum: Number(e.target.value),
+                      })
+                    }
+                    style={{ paddingRight: "20px" }}
+                  />
                 ) : (
                   `${transaction.sum.toLocaleString()} $`
                 )}

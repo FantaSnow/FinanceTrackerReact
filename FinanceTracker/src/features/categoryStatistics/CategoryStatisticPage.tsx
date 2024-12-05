@@ -26,7 +26,9 @@ const CategoryStatisticPage: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchStatisticsForAllCategories();
+    if (startDate && endDate) {
+      fetchStatisticsForAllCategories();
+    }
   }, [startDate, endDate]);
 
   return (

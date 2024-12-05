@@ -27,7 +27,7 @@ const CategoryStatisticSelectDate: React.FC<Props> = ({
 
     setStartDate(formattedStartDate);
     setEndDate(formattedEndDate);
-  }, [setStartDate, setEndDate]);
+  }, []);
 
   const handleStartDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setStartDate(e.target.value);

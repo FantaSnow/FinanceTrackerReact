@@ -1,11 +1,6 @@
 import { HttpClient } from "../HttpClient";
 import AuthService from "./AuthService";
-import {
-  BankDto,
-  BankCreateDto,
-  BankUpdateDto,
-  BankAddBalanceDto,
-} from "../dto/BankDto";
+import { BankDto, BankCreateDto, BankUpdateDto } from "../dto/BankDto";
 
 class BankService {
   private httpClient = new HttpClient({

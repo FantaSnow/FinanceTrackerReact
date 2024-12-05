@@ -15,95 +15,42 @@ const Pagination: React.FC<Props> = ({
   const renderPaginationButtons = () => {
     const maxPagesToShow = 5;
     const buttons = [];
+
+    const createButton = (page: number) => (
+      <button
+        key={page}
+        className={`page-btn ${page === currentPage ? "active" : ""}`}
+        onClick={() => handlePageChange(page)}
+      >
+        {page}
+      </button>
+    );
+
     if (totalPages <= maxPagesToShow) {
       for (let i = 1; i <= totalPages; i++) {
-        buttons.push(
-          <button
-            key={i}
-            className={`page-btn ${i === currentPage ? "active" : ""}`}
-            onClick={() => handlePageChange(i)}
-          >
-            {i}
-          </button>
-        );
+        buttons.push(createButton(i));
       }
     } else {
       if (currentPage <= 3) {
         for (let i = 1; i <= 4; i++) {
-          buttons.push(
-            <button
-              key={i}
-              className={`page-btn ${i === currentPage ? "active" : ""}`}
-              onClick={() => handlePageChange(i)}
-            >
-              {i}
-            </button>
-          );
+          buttons.push(createButton(i));
         }
         buttons.push(<span key="ellipsis">...</span>);
-        buttons.push(
-          <button
-            key={totalPages}
-            className={`page-btn ${totalPages === currentPage ? "active" : ""}`}
-            onClick={() => handlePageChange(totalPages)}
-          >
-            {totalPages}
-          </button>
-        );
+        buttons.push(createButton(totalPages));
       } else if (currentPage >= totalPages - 2) {
-        buttons.push(
-          <button
-            key={1}
-            className={`page-btn ${1 === currentPage ? "active" : ""}`}
-            onClick={() => handlePageChange(1)}
-          >
-            1
-          </button>
-        );
+        buttons.push(createButton(1));
         buttons.push(<span key="ellipsis">...</span>);
         for (let i = totalPages - 3; i <= totalPages; i++) {
-          buttons.push(
-            <button
-              key={i}
-              className={`page-btn ${i === currentPage ? "active" : ""}`}
-              onClick={() => handlePageChange(i)}
-            >
-              {i}
-            </button>
-          );
+          buttons.push(createButton(i));
         }
       } else {
-        buttons.push(
-          <button
-            key={1}
-            className={`page-btn ${1 === currentPage ? "active" : ""}`}
-            onClick={() => handlePageChange(1)}
-          >
-            1
-          </button>
-        );
+        buttons.push(createButton(1));
         buttons.push(<span key="ellipsis">...</span>);
         for (let i = currentPage - 1; i <= currentPage + 1; i++) {
-          buttons.push(
-            <button
-              key={i}
-              className={`page-btn ${i === currentPage ? "active" : ""}`}
-              onClick={() => handlePageChange(i)}
-            >
-              {i}
-            </button>
-          );
+          buttons.push(createButton(i));
         }
         buttons.push(<span key="ellipsis-last">...</span>);
-        buttons.push(
-          <button
-            key={totalPages}
-            className={`page-btn ${totalPages === currentPage ? "active" : ""}`}
-            onClick={() => handlePageChange(totalPages)}
-          >
-            {totalPages}
-          </button>
-        );
+        buttons.push(createButton(totalPages));
       }
     }
     return buttons;
