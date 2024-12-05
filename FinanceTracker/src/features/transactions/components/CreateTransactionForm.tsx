@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { CategoryDto } from "../../../api/dto/CategoryDto";
 import "../../../css/Transaction.css";
 import TransactionService from "../../../api/services/TransactionService";
-import { useNotification } from "../../notification/NotificationProvider";
+import { useNotification } from "../../../components/notification/NotificationProvider";
 
 type Props = {
   categories: CategoryDto[];

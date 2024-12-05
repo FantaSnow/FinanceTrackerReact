@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import { TransactionDto } from "../../../api/dto/TransactionDto";
 import { CategoryDto } from "../../../api/dto/CategoryDto";
 import "../../../css/Transaction.css";
-import Pagination from "./Pagination";
+import Pagination from "../../../components/Pagination";
 import TransactionService from "../../../api/services/TransactionService";
-import { useNotification } from "../../notification/NotificationProvider";
+import { useNotification } from "../../../components/notification/NotificationProvider";
 
 type Props = {
   transactions: TransactionDto[];
@@ -135,7 +135,7 @@ const TransactionTable: React.FC<Props> = ({
                     </span>
                   </div>
                 ) : (
-                  `${transaction.sum} $`
+                  `${transaction.sum.toLocaleString()} $`
                 )}
               </div>
 

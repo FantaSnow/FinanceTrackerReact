@@ -3,7 +3,7 @@ import BankService from "../../api/services/BankService";
 import BankTransactionService from "../../api/services/BankTransactionService";
 import { BankDto } from "../../api/dto/BankDto";
 import TransactionHistoryModal from "./TransactionHistoryModal";
-import { useNotification } from "../notification/NotificationProvider";
+import { useNotification } from "../../components/notification/NotificationProvider";
 import "../../css/BankComponent.css";
 
 const BankComponent: React.FC = () => {
@@ -18,18 +18,6 @@ const BankComponent: React.FC = () => {
     { createdAt: Date; amount: number }[] | null
   >(null);
   const { addNotification } = useNotification();
-
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
-
-  const totalPages = selectedTransactions
-    ? Math.ceil(selectedTransactions.length / itemsPerPage)
-    : 0;
-
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
-
   const fetchBanks = async () => {
     try {
       const data = await BankService.getAllBanksByUser();
@@ -234,10 +222,6 @@ const BankComponent: React.FC = () => {
         <TransactionHistoryModal
           transactions={selectedTransactions}
           onClose={closeHistoryModal}
-          currentPage={currentPage}
-          totalPages={totalPages}
-          itemsPerPage={itemsPerPage}
-          handlePageChange={handlePageChange}
         />
       )}
     </div>

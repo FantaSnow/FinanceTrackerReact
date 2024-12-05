@@ -3,11 +3,11 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import Layout from "../components/leyouts/Layout";
 import Login from "../components/Register/Login";
 import Register from "../components/Register/Register";
-import BankList from "../components/banks/BankPage";
+import BankList from "../features/banks/BankPage";
 import ProtectedRoute from "./ProtectedRoute";
-import TransactionPage from "../components/transactions/TransactionPage";
-import StatisticPage from "../components/statistics/StatisticPage";
-import CategoryStatisticComponent from "../components/categoryStatistics/CategoryStatisticPage";
+import TransactionPage from "../features/transactions/TransactionPage";
+import StatisticPage from "../features/statistics/StatisticPage";
+import CategoryStatisticComponent from "../features/categoryStatistics/CategoryStatisticPage";
 
 const BasicRouter: React.FC = () => {
   return (

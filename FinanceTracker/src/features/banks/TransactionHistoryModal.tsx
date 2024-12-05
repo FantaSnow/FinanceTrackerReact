@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "../../css/TransactionHistoryModal.css";
-import Pagination from "../transactions/components/Pagination";
+import Pagination from "../../components/Pagination";
 
 interface TransactionHistoryModalProps {
   transactions: { createdAt: Date; amount: number }[];

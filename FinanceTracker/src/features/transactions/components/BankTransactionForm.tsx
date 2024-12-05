@@ -4,7 +4,7 @@ import { BankTransactionCreateDto } from "../../../api/dto/BankTransactionDto";
 import "../../../css/Transaction.css";
 import BankService from "../../../api/services/BankService";
 import BankTransactionService from "../../../api/services/BankTransactionService";
-import { useNotification } from "../../notification/NotificationProvider";
+import { useNotification } from "../../../components/notification/NotificationProvider";
 
 type Props = {
   banks: BankDto[];
