@@ -1,4 +1,3 @@
-import React from "react";
 import "../../css/Footer.css";
 
 const Footer = () => {
@@ -21,7 +20,7 @@ const Footer = () => {
         <div className="row">
           <div>
             <p className="copyright-text">
-              FinanceTracker &copy; 2024 Всі права належать
+              Copyright &copy; 2024 Всі права належать
               <a href="#"> Тарасюку Дмитру</a>.
             </p>
           </div>

@@ -45,6 +45,11 @@ class BankTransactionService {
       data
     );
   }
+  async getAllByBank(bankId: string): Promise<BankTransactionDto[]> {
+    return await this.httpClient.get<BankTransactionDto[]>(
+      `/getAllByBank/${bankId}`
+    );
+  }
 
   async update(
     bankTransactionId: string,

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import "../../css/StatisticComponent.css";
 import StatisticSelectDate from "./components/StatisticSelectDate";
 import StatisticFormToggle from "./components/StatisticFormToggle";
@@ -35,85 +35,79 @@ const StatisticPage: React.FC = () => {
       plusCountCategory: 0,
     });
 
-  const fetchBalance = async () => {
+  const fetchBalance = useCallback(async () => {
     try {
       const balanceData = await UserService.getBalanceById();
       setBalance(balanceData.balance);
     } catch (error) {
       console.error("Failed to fetch balance", error);
     }
-  };
+  }, []);
 
   const handlePageChange = (page: number) => setCurrentPage(page);
 
-  const fetchTransactions = async () => {
+  const fetchTransactions = useCallback(async () => {
     try {
       let data: TransactionDto[] = [];
-      if (activeForm === "CardPlusActive" && !selectedCategory) {
-        data = await TransactionService.getAllPlusByUserAndDate(
-          currentPage,
-          itemsPerPage,
-          startDate,
-          endDate
-        );
+      if (activeForm === "CardPlusActive") {
+        data = selectedCategory
+          ? await TransactionService.getAllPlusByUserAndDateAndCategory(
+              currentPage,
+              itemsPerPage,
+              startDate,
+              endDate,
+              selectedCategory
+            )
+          : await TransactionService.getAllPlusByUserAndDate(
+              currentPage,
+              itemsPerPage,
+              startDate,
+              endDate
+            );
+      } else if (activeForm === "CardMinusActive") {
+        data = selectedCategory
+          ? await TransactionService.getAllMinusByUserAndDateAndCategory(
+              currentPage,
+              itemsPerPage,
+              startDate,
+              endDate,
+              selectedCategory
+            )
+          : await TransactionService.getAllMinusByUserAndDate(
+              currentPage,
+              itemsPerPage,
+              startDate,
+              endDate
+            );
       }
-
-      if (activeForm === "CardPlusActive" && selectedCategory) {
-        data = await TransactionService.getAllPlusByUserAndDateAndCategory(
-          currentPage,
-          itemsPerPage,
-          startDate,
-          endDate,
-          selectedCategory
-        );
-      }
-
-      if (activeForm === "CardMinusActive" && !selectedCategory) {
-        data = await TransactionService.getAllMinusByUserAndDate(
-          currentPage,
-          itemsPerPage,
-          startDate,
-          endDate
-        );
-      }
-
-      if (activeForm === "CardMinusActive" && selectedCategory) {
-        data = await TransactionService.getAllMinusByUserAndDateAndCategory(
-          currentPage,
-          itemsPerPage,
-          startDate,
-          endDate,
-          selectedCategory
-        );
-      }
-
       setTransactions(data);
       setTotalPages(Math.ceil(data.length / itemsPerPage));
     } catch (error) {
       console.error("Failed to fetch transactions", error);
     }
-  };
+  }, [
+    activeForm,
+    currentPage,
+    itemsPerPage,
+    startDate,
+    endDate,
+    selectedCategory,
+  ]);
 
-  const fetchStatisticsByTimeAndCategory = async () => {
+  const fetchStatisticsByTimeAndCategory = useCallback(async () => {
     try {
-      let data;
-      if (!selectedCategory) {
-        data = await StatisticService.getByTimeAndCategoryForAll(
-          startDate,
-          endDate
-        );
-      } else {
-        data = await StatisticService.getByTimeAndCategory(
-          startDate,
-          endDate,
-          selectedCategory
-        );
-      }
+      const data = selectedCategory
+        ? await StatisticService.getByTimeAndCategory(
+            startDate,
+            endDate,
+            selectedCategory
+          )
+        : await StatisticService.getByTimeAndCategoryForAll(startDate, endDate);
       setStatisticsByTimeAndCategory(data);
     } catch (error) {
       console.error("Failed to fetch statistics by category", error);
     }
-  };
+  }, [startDate, endDate, selectedCategory]);
 
   useEffect(() => {
     fetchTransactions();
@@ -124,7 +118,7 @@ const StatisticPage: React.FC = () => {
   useEffect(() => {
     fetchTransactions();
     fetchStatisticsByTimeAndCategory();
-  }, [activeForm, currentPage, startDate, endDate]);
+  }, [fetchTransactions, fetchStatisticsByTimeAndCategory]);
 
   const handleFormToggle = (form: string) => {
     if (activeForm !== form) {
@@ -144,7 +138,7 @@ const StatisticPage: React.FC = () => {
   useEffect(() => {
     fetchCategories();
     fetchBalance();
-  }, []);
+  }, [fetchCategories, fetchBalance]);
 
   return (
     <div>

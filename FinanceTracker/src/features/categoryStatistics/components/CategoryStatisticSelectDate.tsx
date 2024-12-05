@@ -1,28 +1,19 @@
 import React, { useEffect, useState } from "react";
-import "../../../css/StatisticComponent.css";
-import { CategoryDto } from "../../../api/dto/CategoryDto";
+import "../../../css/CategoryStatisticComponent.css";
 
 type Props = {
   startDate: string;
   endDate: string;
-  categories: CategoryDto[];
   setStartDate: (date: string) => void;
   setEndDate: (date: string) => void;
-  fetchTransactions: () => void;
-  onCategorySelect: (categoryId: string) => void;
 };
 
-const StatisticSelectDate: React.FC<Props> = ({
+const CategoryStatisticSelectDate: React.FC<Props> = ({
   startDate,
   endDate,
-  categories,
   setStartDate,
   setEndDate,
-  fetchTransactions,
-  onCategorySelect,
 }) => {
-  const [selectedCategory, setSelectedCategory] = useState<string>("");
-
   useEffect(() => {
     const currentDate = new Date();
     const startDate = new Date(currentDate);
@@ -36,22 +27,14 @@ const StatisticSelectDate: React.FC<Props> = ({
 
     setStartDate(formattedStartDate);
     setEndDate(formattedEndDate);
-  }, [setStartDate, setEndDate]);
+  }, []);
 
   const handleStartDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setStartDate(e.target.value);
-    fetchTransactions();
   };
 
   const handleEndDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEndDate(e.target.value);
-    fetchTransactions();
-  };
-
-  const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const categoryId = e.target.value;
-    setSelectedCategory(categoryId);
-    onCategorySelect(categoryId);
   };
 
   return (
@@ -78,25 +61,8 @@ const StatisticSelectDate: React.FC<Props> = ({
           />
         </span>
       </label>
-      <label className="rowDate">
-        <span>Category:</span>
-        <span className="date-wrapper">
-          <select
-            className="statistic-selector"
-            value={selectedCategory}
-            onChange={handleCategoryChange}
-          >
-            <option value="">All Categories</option>
-            {categories.map((category) => (
-              <option key={category.id} value={category.id}>
-                {category.name}
-              </option>
-            ))}
-          </select>
-        </span>
-      </label>
     </div>
   );
 };
 
-export default StatisticSelectDate;
+export default CategoryStatisticSelectDate;

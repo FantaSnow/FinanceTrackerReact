@@ -1,19 +1,28 @@
 import React, { useEffect, useState } from "react";
-import "../../../css/CategoryStatisticComponent.css";
+import "../../../css/StatisticComponent.css";
+import { CategoryDto } from "../../../api/dto/CategoryDto";
 
 type Props = {
   startDate: string;
   endDate: string;
+  categories: CategoryDto[];
   setStartDate: (date: string) => void;
   setEndDate: (date: string) => void;
+  fetchTransactions: () => void;
+  onCategorySelect: (categoryId: string) => void;
 };
 
-const CategoryStatisticSelectDate: React.FC<Props> = ({
+const StatisticSelectDate: React.FC<Props> = ({
   startDate,
   endDate,
+  categories,
   setStartDate,
   setEndDate,
+  fetchTransactions,
+  onCategorySelect,
 }) => {
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
+
   useEffect(() => {
     const currentDate = new Date();
     const startDate = new Date(currentDate);
@@ -22,11 +31,8 @@ const CategoryStatisticSelectDate: React.FC<Props> = ({
     startDate.setFullYear(currentDate.getFullYear() - 1);
     endDate.setFullYear(currentDate.getFullYear() + 1);
 
-    const formattedStartDate = startDate.toISOString().split("T")[0];
-    const formattedEndDate = endDate.toISOString().split("T")[0];
-
-    setStartDate(formattedStartDate);
-    setEndDate(formattedEndDate);
+    setStartDate(startDate.toISOString().split("T")[0]);
+    setEndDate(endDate.toISOString().split("T")[0]);
   }, [setStartDate, setEndDate]);
 
   const handleStartDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -36,6 +42,16 @@ const CategoryStatisticSelectDate: React.FC<Props> = ({
   const handleEndDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEndDate(e.target.value);
   };
+
+  const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const categoryId = e.target.value;
+    setSelectedCategory(categoryId);
+    onCategorySelect(categoryId);
+  };
+
+  useEffect(() => {
+    fetchTransactions();
+  }, [startDate, endDate, selectedCategory]);
 
   return (
     <div className="date-selector">
@@ -61,8 +77,25 @@ const CategoryStatisticSelectDate: React.FC<Props> = ({
           />
         </span>
       </label>
+      <label className="rowDate">
+        <span>Category:</span>
+        <span className="date-wrapper">
+          <select
+            className="statistic-selector"
+            value={selectedCategory}
+            onChange={handleCategoryChange}
+          >
+            <option value="">All Categories</option>
+            {categories.map((category) => (
+              <option key={category.id} value={category.id}>
+                {category.name}
+              </option>
+            ))}
+          </select>
+        </span>
+      </label>
     </div>
   );
 };
 
-export default CategoryStatisticSelectDate;
+export default StatisticSelectDate;

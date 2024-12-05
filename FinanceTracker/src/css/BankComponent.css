@@ -129,6 +129,7 @@ body {
 }
 
 .new-bank-card-balance {
+    width: 100%;
     font-size: 30px;
     margin-bottom: 20px;
 }

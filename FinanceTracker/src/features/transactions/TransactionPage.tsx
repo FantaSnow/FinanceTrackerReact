@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import TransactionFormToggle from "./components/TransactionFormToggle";
 import CreateTransactionForm from "./components/CreateTransactionForm";
 import BankTransactionForm from "./components/BankTransactionForm";
@@ -25,57 +25,64 @@ const TransactionPage: React.FC = () => {
   const [totalPages, setTotalPages] = useState(1);
   const itemsPerPage = 9;
 
-  const fetchBalance = async () => {
+  const fetchBalance = useCallback(async () => {
     try {
       const balanceData = await UserService.getBalanceById();
       setBalance(balanceData.balance);
     } catch (error) {
       console.error("Failed to fetch balance", error);
     }
-  };
+  }, []);
 
-  const fetchTransactions = async () => {
+  const fetchTransactions = useCallback(async () => {
     try {
-      const data = await TransactionService.getAllByUser(
+      const transactionsData = await TransactionService.getAllByUser(
         currentPage,
         itemsPerPage
       );
       setTransactions(
-        data.sort(
+        transactionsData.sort(
           (a, b) =>
             new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
         )
       );
-      setTotalPages(Math.ceil(data.length / itemsPerPage));
+      setTotalPages(Math.ceil(transactionsData.length / itemsPerPage));
     } catch (error) {
       console.error("Failed to fetch transactions", error);
     }
-  };
+  }, [currentPage, itemsPerPage]);
 
-  const fetchCategories = async () => {
+  const fetchCategories = useCallback(async () => {
     try {
-      const data = await CategoryService.getAllCategories();
-      setCategories(data);
+      const categoriesData = await CategoryService.getAllCategories();
+      setCategories(categoriesData);
     } catch (error) {
       console.error("Failed to fetch categories", error);
     }
-  };
+  }, []);
 
-  const fetchBanks = async () => {
+  const fetchBanks = useCallback(async () => {
     try {
-      const data = await BankService.getAllBanksByUser();
-      setBanks(data);
+      const banksData = await BankService.getAllBanksByUser();
+      setBanks(banksData);
     } catch (error) {
       console.error("Failed to fetch banks", error);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchBalance();
+    fetchTransactions();
+  }, [fetchBalance, fetchTransactions]);
 
   useEffect(() => {
     fetchCategories();
-    fetchTransactions();
-    fetchBalance();
     fetchBanks();
-  }, [currentPage]);
+  }, [fetchCategories, fetchBanks]);
+
+  const memoizedTransactions = useMemo(() => transactions, [transactions]);
+  const memoizedCategories = useMemo(() => categories, [categories]);
+  const memoizedBanks = useMemo(() => banks, [banks]);
 
   const handlePageChange = (page: number) => setCurrentPage(page);
 
@@ -89,16 +96,17 @@ const TransactionPage: React.FC = () => {
           />
           {activeForm === "createTransaction" ? (
             <CreateTransactionForm
-              categories={categories}
+              categories={memoizedCategories}
               balance={balance}
               fetchTransactions={fetchTransactions}
               fetchBalance={fetchBalance}
             />
           ) : (
             <BankTransactionForm
-              banks={banks}
+              banks={memoizedBanks}
               balance={balance}
               fetchBalance={fetchBalance}
+              fetchBanks={fetchBanks}
             />
           )}
         </div>
@@ -106,8 +114,8 @@ const TransactionPage: React.FC = () => {
         <div className="containerTransaction">
           <div className="TableDiv">
             <TransactionTable
-              transactions={transactions}
-              categories={categories}
+              transactions={memoizedTransactions}
+              categories={memoizedCategories}
               currentPage={currentPage}
               totalPages={totalPages}
               itemsPerPage={itemsPerPage}
