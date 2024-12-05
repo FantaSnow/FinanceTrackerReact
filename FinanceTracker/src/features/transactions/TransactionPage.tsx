@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import TransactionFormToggle from "./components/TransactionFormToggle";
 import CreateTransactionForm from "./components/CreateTransactionForm";
 import BankTransactionForm from "./components/BankTransactionForm";
@@ -25,17 +25,21 @@ const TransactionPage: React.FC = () => {
   const [totalPages, setTotalPages] = useState(1);
   const itemsPerPage = 9;
 
-  const fetchData = async () => {
+  const fetchBalance = useCallback(async () => {
     try {
-      const [balanceData, transactionsData, categoriesData, banksData] =
-        await Promise.all([
-          UserService.getBalanceById(),
-          TransactionService.getAllByUser(currentPage, itemsPerPage),
-          CategoryService.getAllCategories(),
-          BankService.getAllBanksByUser(),
-        ]);
-
+      const balanceData = await UserService.getBalanceById();
       setBalance(balanceData.balance);
+    } catch (error) {
+      console.error("Failed to fetch balance", error);
+    }
+  }, []);
+
+  const fetchTransactions = useCallback(async () => {
+    try {
+      const transactionsData = await TransactionService.getAllByUser(
+        currentPage,
+        itemsPerPage
+      );
       setTransactions(
         transactionsData.sort(
           (a, b) =>
@@ -43,16 +47,42 @@ const TransactionPage: React.FC = () => {
         )
       );
       setTotalPages(Math.ceil(transactionsData.length / itemsPerPage));
+    } catch (error) {
+      console.error("Failed to fetch transactions", error);
+    }
+  }, [currentPage, itemsPerPage]);
+
+  const fetchCategories = useCallback(async () => {
+    try {
+      const categoriesData = await CategoryService.getAllCategories();
       setCategories(categoriesData);
+    } catch (error) {
+      console.error("Failed to fetch categories", error);
+    }
+  }, []);
+
+  const fetchBanks = useCallback(async () => {
+    try {
+      const banksData = await BankService.getAllBanksByUser();
       setBanks(banksData);
     } catch (error) {
-      console.error("Failed to fetch data", error);
+      console.error("Failed to fetch banks", error);
     }
-  };
+  }, []);
 
   useEffect(() => {
-    fetchData();
-  }, [currentPage]);
+    fetchBalance();
+    fetchTransactions();
+  }, [fetchBalance, fetchTransactions]);
+
+  useEffect(() => {
+    fetchCategories();
+    fetchBanks();
+  }, [fetchCategories, fetchBanks]);
+
+  const memoizedTransactions = useMemo(() => transactions, [transactions]);
+  const memoizedCategories = useMemo(() => categories, [categories]);
+  const memoizedBanks = useMemo(() => banks, [banks]);
 
   const handlePageChange = (page: number) => setCurrentPage(page);
 
@@ -66,17 +96,17 @@ const TransactionPage: React.FC = () => {
           />
           {activeForm === "createTransaction" ? (
             <CreateTransactionForm
-              categories={categories}
+              categories={memoizedCategories}
               balance={balance}
-              fetchTransactions={fetchData}
-              fetchBalance={fetchData}
+              fetchTransactions={fetchTransactions}
+              fetchBalance={fetchBalance}
             />
           ) : (
             <BankTransactionForm
-              banks={banks}
+              banks={memoizedBanks}
               balance={balance}
-              fetchBalance={fetchData}
-              fetchBanks={fetchData}
+              fetchBalance={fetchBalance}
+              fetchBanks={fetchBanks}
             />
           )}
         </div>
@@ -84,14 +114,14 @@ const TransactionPage: React.FC = () => {
         <div className="containerTransaction">
           <div className="TableDiv">
             <TransactionTable
-              transactions={transactions}
-              categories={categories}
+              transactions={memoizedTransactions}
+              categories={memoizedCategories}
               currentPage={currentPage}
               totalPages={totalPages}
               itemsPerPage={itemsPerPage}
               handlePageChange={handlePageChange}
               setTransactions={setTransactions}
-              fetchBalance={fetchData}
+              fetchBalance={fetchBalance}
             />
           </div>
           <BalanceDisplay balance={balance} />
