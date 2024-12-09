@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import "../../css/CategoryStatisticComponent.css";
 import StatisticSelectDate from "./components/CategoryStatisticSelectDate";
 import CategoryStatisticCard from "./components/CategoryStatisticCard";
@@ -8,12 +8,13 @@ import { StatisticCategoryDto } from "../../api/dto/StatisticDto";
 const CategoryStatisticPage: React.FC = () => {
   const [startDate, setStartDate] = useState<string>("");
   const [endDate, setEndDate] = useState<string>("");
-
   const [statisticsForAllCategories, setStatisticsForAllCategories] = useState<
     StatisticCategoryDto[]
   >([]);
+  const [loading, setLoading] = useState<boolean>(false);
 
-  const fetchStatisticsForAllCategories = async () => {
+  const fetchStatisticsForAllCategories = useCallback(async () => {
+    setLoading(true);
     try {
       const data = await StatisticService.getForAllCategories(
         startDate,
@@ -22,14 +23,16 @@ const CategoryStatisticPage: React.FC = () => {
       setStatisticsForAllCategories(data);
     } catch (error) {
       console.error("Failed to fetch statistics by category", error);
+    } finally {
+      setLoading(false);
     }
-  };
+  }, [startDate, endDate]);
 
   useEffect(() => {
     if (startDate && endDate) {
       fetchStatisticsForAllCategories();
     }
-  }, [startDate, endDate]);
+  }, [startDate, endDate, fetchStatisticsForAllCategories]);
 
   return (
     <div className="Main">
@@ -39,6 +42,19 @@ const CategoryStatisticPage: React.FC = () => {
         setStartDate={setStartDate}
         setEndDate={setEndDate}
       />
+      {loading && (
+        <div
+          className="loading"
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          Loading...
+        </div>
+      )}
+
       <CategoryStatisticCard
         statisticsForAllCategories={statisticsForAllCategories}
       />
