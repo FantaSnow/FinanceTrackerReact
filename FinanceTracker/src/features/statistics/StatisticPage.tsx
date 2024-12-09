@@ -10,6 +10,7 @@ import TransactionService from "../../api/services/TransactionService";
 import CategoryService from "../../api/services/CategoryService";
 import StatisticService from "../../api/services/StatisticService";
 import { StatisticDto } from "../../api/dto/StatisticDto";
+import LoadingIndicator from "../../components/loading/LoadingIndicator";
 
 const StatisticPage: React.FC = () => {
   const [activeForm, setActiveForm] = useState<string>("CardPlusActive");
@@ -192,18 +193,7 @@ const StatisticPage: React.FC = () => {
         fetchTransactions={fetchTransactions}
         onCategorySelect={setSelectedCategory}
       />
-      {loading && (
-        <div
-          className="loading"
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          Loading...
-        </div>
-      )}
+      {loading && <LoadingIndicator />}
       <StatisticFormToggle
         activeForm={activeForm}
         handleFormToggle={handleFormToggle}

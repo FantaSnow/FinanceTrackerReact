@@ -4,6 +4,7 @@ import StatisticSelectDate from "./components/CategoryStatisticSelectDate";
 import CategoryStatisticCard from "./components/CategoryStatisticCard";
 import StatisticService from "../../api/services/StatisticService";
 import { StatisticCategoryDto } from "../../api/dto/StatisticDto";
+import LoadingIndicator from "../../components/loading/LoadingIndicator";
 
 const CategoryStatisticPage: React.FC = () => {
   const [startDate, setStartDate] = useState<string>("");
@@ -42,18 +43,7 @@ const CategoryStatisticPage: React.FC = () => {
         setStartDate={setStartDate}
         setEndDate={setEndDate}
       />
-      {loading && (
-        <div
-          className="loading"
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          Loading...
-        </div>
-      )}
+      {loading && <LoadingIndicator />}
 
       <CategoryStatisticCard
         statisticsForAllCategories={statisticsForAllCategories}

@@ -12,6 +12,7 @@ import { TransactionDto } from "../../api/dto/TransactionDto";
 import { CategoryDto } from "../../api/dto/CategoryDto";
 import { BankDto } from "../../api/dto/BankDto";
 import "../../css/Transaction.css";
+import LoadingIndicator from "../../components/loading/LoadingIndicator";
 
 const TransactionPage: React.FC = () => {
   const [transactions, setTransactions] = useState<TransactionDto[]>([]);
@@ -123,7 +124,7 @@ const TransactionPage: React.FC = () => {
             />
           )}
         </div>
-        {loading && <div className="loading">Loading...</div>}
+        {loading && <LoadingIndicator />}
 
         <div className="containerTransaction">
           <div className="TableDiv">

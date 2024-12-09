@@ -7,6 +7,7 @@ import { useNotification } from "../../components/notification/NotificationProvi
 import BankCard from "./components/BankCard";
 import NewBankCard from "./components/NewBankCard";
 import "../../css/BankComponent.css";
+import LoadingIndicator from "../../components/loading/LoadingIndicator";
 
 const BankComponent: React.FC = () => {
   const [banks, setBanks] = useState<BankDto[]>([]);
@@ -133,7 +134,7 @@ const BankComponent: React.FC = () => {
           setNewBank={setNewBank}
           handleCreateBank={handleCreateBank}
         />
-        {loading && <div className="loading">Loading...</div>}
+        {loading && <LoadingIndicator />}
 
         <h1>Список банків</h1>
         <div className="card-container">
