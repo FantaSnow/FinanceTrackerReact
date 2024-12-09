@@ -16,6 +16,7 @@ const StatisticPage: React.FC = () => {
   const [transactions, setTransactions] = useState<TransactionDto[]>([]);
   const [categories, setCategories] = useState<CategoryDto[]>([]);
   const [balance, setBalance] = useState<number>(0);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -44,46 +45,84 @@ const StatisticPage: React.FC = () => {
     }
   }, []);
 
-  const handlePageChange = (page: number) => setCurrentPage(page);
+  const handlePageChange = useCallback(
+    (page: number) => setCurrentPage(page),
+    []
+  );
+
+  const fetchTransactionsData = async (
+    activeForm: string,
+    currentPage: number,
+    itemsPerPage: number,
+    startDate: string,
+    endDate: string,
+    selectedCategory: string
+  ): Promise<TransactionDto[]> => {
+    if (activeForm === "CardPlusActive") {
+      return selectedCategory
+        ? await TransactionService.getAllPlusByUserAndDateAndCategory(
+            currentPage,
+            itemsPerPage,
+            startDate,
+            endDate,
+            selectedCategory
+          )
+        : await TransactionService.getAllPlusByUserAndDate(
+            currentPage,
+            itemsPerPage,
+            startDate,
+            endDate
+          );
+    } else if (activeForm === "CardMinusActive") {
+      return selectedCategory
+        ? await TransactionService.getAllMinusByUserAndDateAndCategory(
+            currentPage,
+            itemsPerPage,
+            startDate,
+            endDate,
+            selectedCategory
+          )
+        : await TransactionService.getAllMinusByUserAndDate(
+            currentPage,
+            itemsPerPage,
+            startDate,
+            endDate
+          );
+    }
+    return [];
+  };
+
+  const fetchStatisticsData = async (
+    startDate: string,
+    endDate: string,
+    selectedCategory: string
+  ): Promise<StatisticDto> => {
+    return selectedCategory
+      ? await StatisticService.getByTimeAndCategory(
+          startDate,
+          endDate,
+          selectedCategory
+        )
+      : await StatisticService.getByTimeAndCategoryForAll(startDate, endDate);
+  };
 
   const fetchTransactions = useCallback(async () => {
+    setLoading(true);
     try {
-      let data: TransactionDto[] = [];
-      if (activeForm === "CardPlusActive") {
-        data = selectedCategory
-          ? await TransactionService.getAllPlusByUserAndDateAndCategory(
-              currentPage,
-              itemsPerPage,
-              startDate,
-              endDate,
-              selectedCategory
-            )
-          : await TransactionService.getAllPlusByUserAndDate(
-              currentPage,
-              itemsPerPage,
-              startDate,
-              endDate
-            );
-      } else if (activeForm === "CardMinusActive") {
-        data = selectedCategory
-          ? await TransactionService.getAllMinusByUserAndDateAndCategory(
-              currentPage,
-              itemsPerPage,
-              startDate,
-              endDate,
-              selectedCategory
-            )
-          : await TransactionService.getAllMinusByUserAndDate(
-              currentPage,
-              itemsPerPage,
-              startDate,
-              endDate
-            );
-      }
+      const data = await fetchTransactionsData(
+        activeForm,
+        currentPage,
+        itemsPerPage,
+        startDate,
+        endDate,
+        selectedCategory
+      );
       setTransactions(data);
       setTotalPages(Math.ceil(data.length / itemsPerPage));
     } catch (error) {
       console.error("Failed to fetch transactions", error);
+    } finally {
+      setLoading(false);
     }
   }, [
     activeForm,
@@ -95,50 +134,52 @@ const StatisticPage: React.FC = () => {
   ]);
 
   const fetchStatisticsByTimeAndCategory = useCallback(async () => {
+    setLoading(true);
     try {
-      const data = selectedCategory
-        ? await StatisticService.getByTimeAndCategory(
-            startDate,
-            endDate,
-            selectedCategory
-          )
-        : await StatisticService.getByTimeAndCategoryForAll(startDate, endDate);
+      const data = await fetchStatisticsData(
+        startDate,
+        endDate,
+        selectedCategory
+      );
       setStatisticsByTimeAndCategory(data);
     } catch (error) {
       console.error("Failed to fetch statistics by category", error);
+    } finally {
+      setLoading(false);
     }
   }, [startDate, endDate, selectedCategory]);
 
   useEffect(() => {
-    fetchTransactions();
     setCurrentPage(1);
-    fetchStatisticsByTimeAndCategory();
   }, [activeForm, selectedCategory]);
 
   useEffect(() => {
     fetchTransactions();
     fetchStatisticsByTimeAndCategory();
-  }, [fetchTransactions, fetchStatisticsByTimeAndCategory]);
+  }, [activeForm, currentPage, startDate, endDate, selectedCategory]);
 
-  const handleFormToggle = (form: string) => {
-    if (activeForm !== form) {
-      setActiveForm(form);
-    }
-  };
+  const handleFormToggle = useCallback(
+    (form: string) => {
+      if (activeForm !== form) {
+        setActiveForm(form);
+      }
+    },
+    [activeForm]
+  );
 
-  const fetchCategories = async () => {
+  const fetchCategories = useCallback(async () => {
     try {
       const data = await CategoryService.getAllCategories();
       setCategories(data);
     } catch (error) {
       console.error("Failed to fetch categories", error);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchCategories();
     fetchBalance();
-  }, [fetchCategories, fetchBalance]);
+  }, []);
 
   return (
     <div>
@@ -151,6 +192,18 @@ const StatisticPage: React.FC = () => {
         fetchTransactions={fetchTransactions}
         onCategorySelect={setSelectedCategory}
       />
+      {loading && (
+        <div
+          className="loading"
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          Loading...
+        </div>
+      )}
       <StatisticFormToggle
         activeForm={activeForm}
         handleFormToggle={handleFormToggle}

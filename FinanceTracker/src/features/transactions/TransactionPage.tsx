@@ -18,6 +18,7 @@ const TransactionPage: React.FC = () => {
   const [categories, setCategories] = useState<CategoryDto[]>([]);
   const [banks, setBanks] = useState<BankDto[]>([]);
   const [balance, setBalance] = useState<number>(0);
+  const [loading, setLoading] = useState(false);
 
   const [activeForm, setActiveForm] = useState("createTransaction");
 
@@ -26,15 +27,19 @@ const TransactionPage: React.FC = () => {
   const itemsPerPage = 9;
 
   const fetchBalance = useCallback(async () => {
+    setLoading(true);
     try {
       const balanceData = await UserService.getBalanceById();
       setBalance(balanceData.balance);
     } catch (error) {
       console.error("Failed to fetch balance", error);
+    } finally {
+      setLoading(false);
     }
   }, []);
 
   const fetchTransactions = useCallback(async () => {
+    setLoading(true);
     try {
       const transactionsData = await TransactionService.getAllByUser(
         currentPage,
@@ -49,24 +54,32 @@ const TransactionPage: React.FC = () => {
       setTotalPages(Math.ceil(transactionsData.length / itemsPerPage));
     } catch (error) {
       console.error("Failed to fetch transactions", error);
+    } finally {
+      setLoading(false);
     }
   }, [currentPage, itemsPerPage]);
 
   const fetchCategories = useCallback(async () => {
+    setLoading(true);
     try {
       const categoriesData = await CategoryService.getAllCategories();
       setCategories(categoriesData);
     } catch (error) {
       console.error("Failed to fetch categories", error);
+    } finally {
+      setLoading(false);
     }
   }, []);
 
   const fetchBanks = useCallback(async () => {
+    setLoading(true);
     try {
       const banksData = await BankService.getAllBanksByUser();
       setBanks(banksData);
     } catch (error) {
       console.error("Failed to fetch banks", error);
+    } finally {
+      setLoading(false);
     }
   }, []);
 
@@ -110,6 +123,7 @@ const TransactionPage: React.FC = () => {
             />
           )}
         </div>
+        {loading && <div className="loading">Loading...</div>}
 
         <div className="containerTransaction">
           <div className="TableDiv">
